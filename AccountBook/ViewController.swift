@@ -144,7 +144,7 @@ extension ViewController:UITableViewDataSource {
             
             
             cell.detailTextLabel?.text = payment.money.toMoneyFormatString(payment.locale)
-            cell.detailTextLabel?.textColor = payment.money > 0 ? .black : .red
+            cell.detailTextLabel?.textColor = payment.money >= 0 ? .black : .red
         case 1:
             let locale = paymentLocaleList[indexPath.row]
             let payList = paymentList.filter("locailIdentifier = %@",locale.identifier)
@@ -154,7 +154,7 @@ extension ViewController:UITableViewDataSource {
                 total += pay.money
             }
             cell.detailTextLabel?.text = total.toMoneyFormatString(locale)
-            cell.detailTextLabel?.textColor = total > 0 ? .black : .red
+            cell.detailTextLabel?.textColor = total >= 0 ? .black : .red
 
         case 2:
             switch indexPath.row {
