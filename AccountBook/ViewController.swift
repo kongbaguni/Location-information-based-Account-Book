@@ -25,9 +25,12 @@ class ViewController: UIViewController {
     var locationManager: CLLocationManager? {
         return Utill.navigationController?.locationManager
     }
+    
     var myPointer:MKPointAnnotation? {
         return Utill.navigationController?.myPointer
     }
+    
+    let shopPointer = MKPointAnnotation()
     
     var paymentList:Results<PaymentModel> {
         return try! Realm().objects(PaymentModel.self)
@@ -45,7 +48,6 @@ class ViewController: UIViewController {
         return list
     }
     
-    let buyPointer = MKPointAnnotation()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,7 +57,7 @@ class ViewController: UIViewController {
         view.addSubview(mapView)
         title = Date().toString("YYYY-mm-dd", locale: Locale.current)
         
-        navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.onTouchRightButton(_:)))
+//        navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.onTouchRightButton(_:)))
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -75,7 +77,7 @@ class ViewController: UIViewController {
         if let point = myPointer {
             mapView.addAnnotation(point)
         }
-        mapView.addAnnotation(buyPointer)
+        mapView.addAnnotation(shopPointer)
         tableView.reloadData()
     }
     
@@ -100,7 +102,6 @@ extension ViewController:CLLocationManagerDelegate {
         }
         if let location = locations.first {
             myPointer?.coordinate = location.coordinate
-            myPointer?.title = "my position"
         }
     }
     func locationManager(_ manager: CLLocationManager, didVisit visit: CLVisit) {
@@ -214,18 +215,11 @@ extension ViewController:UITableViewDataSource {
 extension ViewController:UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //        if let sIndex = tableView.indexPathForSelectedRow {
-        //            if sIndex == indexPath {
-        //                tableView.deselectRow(at: indexPath, animated: true)
-        //                findMyPos(myPointer?.coordinate)
-        //            }
-        //        }
         switch indexPath.section {
         case 0:
             let payment = self.paymentList[indexPath.row]
-            buyPointer.coordinate = payment.coordinate2D
-            buyPointer.title = payment.money.toMoneyFormatString(payment.locale)
-            findMyPos(buyPointer.coordinate)
+            shopPointer.coordinate = payment.coordinate2D
+            findMyPos(payment.coordinate2D)
         case 2:
             switch indexPath.row {
             case 0:

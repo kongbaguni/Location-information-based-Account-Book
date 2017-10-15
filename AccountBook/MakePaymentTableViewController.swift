@@ -9,6 +9,10 @@
 import Foundation
 import UIKit
 import RealmSwift
+class InputCell:UITableViewCell {
+    @IBOutlet weak var textField: UITextField!
+    
+}
 
 class MakePaymentTableViewController: UITableViewController {
     enum PaymentType {
@@ -17,8 +21,21 @@ class MakePaymentTableViewController: UITableViewController {
     }
     var pType:PaymentType = .minus
     var data:PaymentModel? = nil
-    @IBOutlet weak var moneyTextField:UITextField!
-    @IBOutlet weak var tagTextField:UITextField!
+    
+    var tagList:Results<TagModel> {
+        return try! Realm().objects(TagModel.self)
+    }
+    
+    var moneyTextField:UITextField? {
+        let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? InputCell
+        return cell?.textField
+    }
+    var tagTextField:UITextField? {
+        let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? InputCell
+        return cell?.textField
+
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         switch pType {
@@ -27,14 +44,9 @@ class MakePaymentTableViewController: UITableViewController {
         default:
             title = "수입내역 작성"
         }
-        if let d = data {
-            moneyTextField.text = "\(abs(d.money))"
-            tagTextField.text = d.tag
-        }
-        for tf in [moneyTextField, tagTextField] {
-            tf?.delegate = self
-        }
     }
+    
+    
     override func willMove(toParentViewController parent: UIViewController?) {
         super.willMove(toParentViewController: parent)
         if parent == nil {
@@ -49,7 +61,7 @@ class MakePaymentTableViewController: UITableViewController {
                 return
             }
             
-            if moneyTextField.text?.isEmpty == true && tagTextField.text?.isEmpty == true {
+            if moneyTextField?.text?.isEmpty == true && tagTextField?.text?.isEmpty == true {
                 return
             }
             
@@ -67,19 +79,23 @@ class MakePaymentTableViewController: UITableViewController {
     
     private func loadData(_ model:PaymentModel) {
         model.datetime = Date()
-        if let text = moneyTextField.text {
+        if let text = moneyTextField?.text {
             model.money = (text as NSString).integerValue
             if pType == .minus {
                 model.money *= -1
             }
         }
-        if let text = tagTextField.text {
+        if let text = tagTextField?.text {
             model.tag = text
         }
         var objs:[Object] = []
         for tag in  model.tag.components(separatedBy: " ") {
+            let text = tag.replacingOccurrences(of: " ", with: "")
+            if text.isEmpty {
+                continue
+            }
             let model = TagModel()
-            model.tag = tag
+            model.tag = text
             objs.append(model)
         }
         let realm = try! Realm()
@@ -95,19 +111,100 @@ class MakePaymentTableViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tagTextField.becomeFirstResponder()
+        DispatchQueue.main.async {
+            self.tagTextField?.becomeFirstResponder()
+        }
+        if let d = data {
+            moneyTextField?.text = "\(abs(d.money))"
+            tagTextField?.text = d.tag
+        }
+        for tf in [moneyTextField, tagTextField] {
+            tf?.delegate = self
+        }
     }
 }
 
 extension MakePaymentTableViewController : UITextFieldDelegate {
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        switch textField {
-        case tagTextField:
-            moneyTextField.becomeFirstResponder()
+        if textField == tagTextField {
+            moneyTextField?.becomeFirstResponder()
+        }
+        return true
+    }
+}
+
+
+extension MakePaymentTableViewController {
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch section {
+        case 0:
+            return 2
+        case 1:
+            return tagList.count
+        default:
+            return 0
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch indexPath.section {
+        case 0:
+            switch indexPath.row {
+            case 0:
+                return tableView.dequeueReusableCell(withIdentifier: "tagInput", for: indexPath)
+            default:
+                return tableView.dequeueReusableCell(withIdentifier: "moneyInput", for: indexPath)
+            }
+        case 1:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "tag", for: indexPath)
+            let tag = tagList[indexPath.row]
+            cell.textLabel?.text = tag.tag
+            return cell
+        default:
+            return UITableViewCell()
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        switch indexPath.section {
+        case 0:
+            break
+        case 1:
+            let tag = tagList[indexPath.row]
+            if let text = tagTextField?.text {
+                let list = text.components(separatedBy: " ")
+                if list.filter({ (t) -> Bool in
+                    return t == tag.tag
+                }).count > 0 {
+                    return
+                }
+            }
+            if tagTextField?.text?.isEmpty == false {
+                tagTextField?.text?.append(" ")
+            }
+            tagTextField?.text?.append(tag.tag)
         default:
             break
         }
-        return true
+    }
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0:
+            return pType == .plus ? "수입" : "지출"
+        case 1:
+            return "태그 선택"
+        default:
+            return nil            
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
     }
 }
