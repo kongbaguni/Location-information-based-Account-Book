@@ -33,7 +33,8 @@ class ViewController: UIViewController {
     let shopPointer = MKPointAnnotation()
     
     var paymentList:Results<PaymentModel> {
-        return try! Realm().objects(PaymentModel.self)
+        let todayStart = Date().toString("yyyy-MM-dd", locale: Locale.current).toDate("yyyy-MM-dd")!
+        return try! Realm().objects(PaymentModel.self).filter("%@ <= datetime", todayStart)
     }
     
     var paymentLocaleList:[Locale] {
@@ -55,7 +56,7 @@ class ViewController: UIViewController {
         locationManager?.delegate = self
         locationManager?.desiredAccuracy = kCLLocationAccuracyBest
         view.addSubview(mapView)
-        title = Date().toString("YYYY-mm-dd", locale: Locale.current)
+        title = Date().toString("yyyy-MM-dd", locale: Locale.current)
         
 //        navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.onTouchRightButton(_:)))
         
@@ -147,7 +148,7 @@ extension ViewController:UITableViewDataSource {
         case 1:
             let locale = paymentLocaleList[indexPath.row]
             let payList = paymentList.filter("locailIdentifier = %@",locale.identifier)
-            cell.textLabel?.text = "\(payList.count) 건"
+            cell.textLabel?.text = "지출 \(payList.filter("money < 0").count) 건, 수입 \(payList.filter("money > 0").count) 건"
             var total = 0
             for pay in payList {
                 total += pay.money
@@ -211,6 +212,7 @@ extension ViewController:UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return CGFloat.leastNormalMagnitude
     }
+    
 }
 extension ViewController:UITableViewDelegate {
     

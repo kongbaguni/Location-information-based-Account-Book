@@ -16,6 +16,7 @@ struct Utill {
     }
     
     static let numberFormatter = NumberFormatter()
+    static let dateFormatter = DateFormatter()
 }
 
 extension Int {
@@ -29,14 +30,31 @@ extension Int {
 
 extension Date
 {
-    func toString(_ format:String = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", locale:Locale)->String
+    func toString(_ format:String = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", locale:Locale = Locale.current)->String
     {
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = locale
-        dateFormatter.dateFormat = format
-        return dateFormatter.string(from: self)
+        Utill.dateFormatter.locale = locale
+        Utill.dateFormatter.dateFormat = format
+        return Utill.dateFormatter.string(from: self)
     }
     
 }
 
+extension String {
+    /** 언어코드*/
+    fileprivate static let Language = (Locale.current as NSLocale).object(forKey: NSLocale.Key.languageCode) as! String
+    /** 국가코드*/
+    fileprivate static let Nation = (Locale.current as NSLocale).object(forKey: NSLocale.Key.countryCode) as! String
+    
+    /** string 값을 NSDate로 변환.*/
+    func toDate(_ format:String = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", locale:Locale = Locale.current)->Date?
+    {
+        Utill.dateFormatter.dateFormat = format
+        Utill.dateFormatter.locale = locale
+        return Utill.dateFormatter.date(from: self)
+        
+    }
+    
+    var localized: String {
+        return NSLocalizedString(self, tableName: nil, bundle: Bundle.main, value: "", comment: "")
+    }
+}

@@ -71,6 +71,7 @@ class MakePaymentTableViewController: UITableViewController {
             model.latitude = mylocation.coordinate.latitude
             model.longitude = mylocation.coordinate.longitude
             model.id = "\(model.longitude) \(model.longitude) \(model.tag)"
+            model.datetime = Date()
             realm.beginWrite()
             realm.add(model, update: true)
             try! realm.commitWrite()
@@ -78,7 +79,6 @@ class MakePaymentTableViewController: UITableViewController {
     }
     
     private func loadData(_ model:PaymentModel) {
-        model.datetime = Date()
         if let text = moneyTextField?.text {
             model.money = (text as NSString).integerValue
             if pType == .minus {
