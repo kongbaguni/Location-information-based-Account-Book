@@ -12,6 +12,11 @@
 		1E2FB7451F935FD0009E1DD5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E2FB7431F935FD0009E1DD5 /* Main.storyboard */; };
 		1E2FB7471F935FD0009E1DD5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1E2FB7461F935FD0009E1DD5 /* Assets.xcassets */; };
 		1E2FB74A1F935FD0009E1DD5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E2FB7481F935FD0009E1DD5 /* LaunchScreen.storyboard */; };
+		1E2FB7561F936089009E1DD5 /* MakePaymentTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2FB7541F936089009E1DD5 /* MakePaymentTableViewController.swift */; };
+		1E2FB7571F936089009E1DD5 /* Utill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2FB7551F936089009E1DD5 /* Utill.swift */; };
+		1E2FB7581F936141009E1DD5 /* PaymentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2FB7521F936073009E1DD5 /* PaymentModel.swift */; };
+		1E2FB7591F936146009E1DD5 /* TagModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2FB7531F936073009E1DD5 /* TagModel.swift */; };
+		25D24855736FFF3C3AC1BEA7 /* Pods_AccountBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F726AA0F15343AB006D568E /* Pods_AccountBook.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +27,13 @@
 		1E2FB7461F935FD0009E1DD5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1E2FB7491F935FD0009E1DD5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1E2FB74B1F935FD0009E1DD5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1E2FB7521F936073009E1DD5 /* PaymentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentModel.swift; sourceTree = "<group>"; };
+		1E2FB7531F936073009E1DD5 /* TagModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagModel.swift; sourceTree = "<group>"; };
+		1E2FB7541F936089009E1DD5 /* MakePaymentTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakePaymentTableViewController.swift; sourceTree = "<group>"; };
+		1E2FB7551F936089009E1DD5 /* Utill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utill.swift; sourceTree = "<group>"; };
+		7D921C85A91179A52A3D51E9 /* Pods-AccountBook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AccountBook.release.xcconfig"; path = "Pods/Target Support Files/Pods-AccountBook/Pods-AccountBook.release.xcconfig"; sourceTree = "<group>"; };
+		7F726AA0F15343AB006D568E /* Pods_AccountBook.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AccountBook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		86814267BA529B3720956B01 /* Pods-AccountBook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AccountBook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AccountBook/Pods-AccountBook.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25D24855736FFF3C3AC1BEA7 /* Pods_AccountBook.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +53,8 @@
 			children = (
 				1E2FB73E1F935FD0009E1DD5 /* AccountBook */,
 				1E2FB73D1F935FD0009E1DD5 /* Products */,
+				8587D904507BF216DD98A31E /* Pods */,
+				480131BB55053C6767AB930A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,11 +72,40 @@
 				1E2FB73F1F935FD0009E1DD5 /* AppDelegate.swift */,
 				1E2FB7411F935FD0009E1DD5 /* ViewController.swift */,
 				1E2FB7431F935FD0009E1DD5 /* Main.storyboard */,
+				1E2FB7541F936089009E1DD5 /* MakePaymentTableViewController.swift */,
+				1E2FB7551F936089009E1DD5 /* Utill.swift */,
+				1E2FB7511F936073009E1DD5 /* model */,
 				1E2FB7461F935FD0009E1DD5 /* Assets.xcassets */,
 				1E2FB7481F935FD0009E1DD5 /* LaunchScreen.storyboard */,
 				1E2FB74B1F935FD0009E1DD5 /* Info.plist */,
 			);
 			path = AccountBook;
+			sourceTree = "<group>";
+		};
+		1E2FB7511F936073009E1DD5 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				1E2FB7521F936073009E1DD5 /* PaymentModel.swift */,
+				1E2FB7531F936073009E1DD5 /* TagModel.swift */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
+		480131BB55053C6767AB930A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7F726AA0F15343AB006D568E /* Pods_AccountBook.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8587D904507BF216DD98A31E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				86814267BA529B3720956B01 /* Pods-AccountBook.debug.xcconfig */,
+				7D921C85A91179A52A3D51E9 /* Pods-AccountBook.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,9 +115,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1E2FB74E1F935FD0009E1DD5 /* Build configuration list for PBXNativeTarget "AccountBook" */;
 			buildPhases = (
+				7BF09533A06A9726A97C1CCC /* [CP] Check Pods Manifest.lock */,
 				1E2FB7381F935FD0009E1DD5 /* Sources */,
 				1E2FB7391F935FD0009E1DD5 /* Frameworks */,
 				1E2FB73A1F935FD0009E1DD5 /* Resources */,
+				5192D8F5E03E5333BE0A91BF /* [CP] Embed Pods Frameworks */,
+				B3E9B138A616D527FF56E64A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -131,13 +178,73 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		5192D8F5E03E5333BE0A91BF /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-AccountBook/Pods-AccountBook-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
+				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AccountBook/Pods-AccountBook-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7BF09533A06A9726A97C1CCC /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AccountBook-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B3E9B138A616D527FF56E64A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AccountBook/Pods-AccountBook-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		1E2FB7381F935FD0009E1DD5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E2FB7591F936146009E1DD5 /* TagModel.swift in Sources */,
+				1E2FB7571F936089009E1DD5 /* Utill.swift in Sources */,
 				1E2FB7421F935FD0009E1DD5 /* ViewController.swift in Sources */,
+				1E2FB7561F936089009E1DD5 /* MakePaymentTableViewController.swift in Sources */,
 				1E2FB7401F935FD0009E1DD5 /* AppDelegate.swift in Sources */,
+				1E2FB7581F936141009E1DD5 /* PaymentModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,6 +379,7 @@
 		};
 		1E2FB74F1F935FD0009E1DD5 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 86814267BA529B3720956B01 /* Pods-AccountBook.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -287,6 +395,7 @@
 		};
 		1E2FB7501F935FD0009E1DD5 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7D921C85A91179A52A3D51E9 /* Pods-AccountBook.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
