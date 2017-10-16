@@ -21,6 +21,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var mapView: MKMapView!
     
+    let makeViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "makePayment") as! MakePaymentTableViewController
     
     var locationManager: CLLocationManager? {
         return Utill.navigationController?.locationManager
@@ -40,9 +41,9 @@ class ViewController: UIViewController {
     var paymentLocaleList:[Locale] {
         var list:[Locale] = []
         for pay in paymentList {
-            if let _ = list.index(of: pay.locale) {
-                
-            } else {
+            if list.filter({ (locale) -> Bool in
+                return locale.regionCode == pay.locale.regionCode
+            }).count == 0 {
                 list.append(pay.locale)
             }
         }
@@ -81,6 +82,7 @@ class ViewController: UIViewController {
         mapView.addAnnotation(shopPointer)
         tableView.reloadData()
     }
+    
     
     @objc func onTouchRightButton(_ sender:UIBarButtonItem) {
         
@@ -147,8 +149,11 @@ extension ViewController:UITableViewDataSource {
             cell.detailTextLabel?.textColor = payment.money >= 0 ? .black : .red
         case 1:
             let locale = paymentLocaleList[indexPath.row]
-            let payList = paymentList.filter("locailIdentifier = %@",locale.identifier)
-            cell.textLabel?.text = "지출 \(payList.filter("money < 0").count) 건, 수입 \(payList.filter("money > 0").count) 건"
+            let payList = paymentList.filter("region = %@",locale.regionCode!)
+            let z = payList.count
+            let a = payList.filter("money < 0").count
+            let b = payList.filter("money > 0").count
+            cell.textLabel?.text = "지출 \(a) 건, 수입 \(b) 건"
             var total = 0
             for pay in payList {
                 total += pay.money
@@ -177,12 +182,12 @@ extension ViewController:UITableViewDataSource {
             if paymentList.count == 0 {
                 return nil
             }
-            return "지출"
+            return "expenditure".localized
         case 1:
             if paymentLocaleList.count == 0 {
                 return nil
             }
-            return "합계"
+            return "sum".localized
         default:
             break
         }
@@ -223,13 +228,14 @@ extension ViewController:UITableViewDelegate {
             shopPointer.coordinate = payment.coordinate2D
             findMyPos(payment.coordinate2D)
         case 2:
+            makeViewController.data = nil
             switch indexPath.row {
             case 0:
-                let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "makePayment") as! MakePaymentTableViewController
-                vc.pType = .plus
-                self.navigationController?.pushViewController(vc, animated: true)
+                makeViewController.pType = .plus
+                self.navigationController?.pushViewController(makeViewController, animated: true)
             case 1:
-                self.navigationController?.performSegue(withIdentifier: "makePayment", sender: nil)
+                makeViewController.pType = .minus
+                self.navigationController?.pushViewController(makeViewController, animated: true)
             default:
                 break
             }
@@ -252,9 +258,9 @@ extension ViewController:UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         return [
-            UITableViewRowAction(style: .destructive, title: "삭제", handler: { (action, indexPath) in
-                let ac = UIAlertController(title: nil, message: "삭제할까요?", preferredStyle: .alert)
-                ac.addAction(UIAlertAction(title: "확인", style: .default, handler: { (action) in
+            UITableViewRowAction(style: .destructive, title: "delete".localized, handler: { (action, indexPath) in
+                let ac = UIAlertController(title: nil, message: "Do you want to delete it?".localized, preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "confirm".localized, style: .default, handler: { (action) in
                     let payment = self.paymentList[indexPath.row]
                     let realm = try! Realm()
                     realm.beginWrite()
@@ -270,15 +276,15 @@ extension ViewController:UITableViewDelegate {
                         }
                     }
                 }))
-                ac.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+                ac.addAction(UIAlertAction(title: "cancel".localized, style: .cancel, handler: nil))
                 self.present(ac, animated: true, completion: nil)
             }),
-            UITableViewRowAction(style: .normal, title: "수정", handler: { (action, indexPath) in
+            UITableViewRowAction(style: .normal, title: "edit".localized, handler: { (action, indexPath) in
                 let data:PaymentModel = self.paymentList[indexPath.row]
-                let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "makePayment") as! MakePaymentTableViewController
-                vc.data = data
-                vc.pType = data.money < 0 ? .minus : .plus
-                self.navigationController?.pushViewController(vc, animated: true)
+                
+                self.makeViewController.data = data
+                self.makeViewController.pType = data.money < 0 ? .minus : .plus
+                self.navigationController?.pushViewController(self.makeViewController, animated: true)
             })
         ]
     }

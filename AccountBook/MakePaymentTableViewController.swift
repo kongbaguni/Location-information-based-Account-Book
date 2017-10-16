@@ -19,10 +19,16 @@ class MakePaymentTableViewController: UITableViewController {
         case plus
         case minus
     }
+    
     var pType:PaymentType = .minus
+    
     var data:PaymentModel? = nil
     
-    var tagList:Results<TagModel> {
+    //추천태그 목록
+    var tagList:[String] = []
+    
+    //전체 태그
+    var totalTags:Results<TagModel> {
         return try! Realm().objects(TagModel.self)
     }
     
@@ -30,6 +36,7 @@ class MakePaymentTableViewController: UITableViewController {
         let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? InputCell
         return cell?.textField
     }
+    
     var tagTextField:UITextField? {
         let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? InputCell
         return cell?.textField
@@ -38,44 +45,39 @@ class MakePaymentTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        switch pType {
-        case .minus:
-            title = "지출내역 작성"
-        default:
-            title = "수입내역 작성"
-        }
     }
     
-    
-    override func willMove(toParentViewController parent: UIViewController?) {
-        super.willMove(toParentViewController: parent)
-        if parent == nil {
-            guard let mylocation = Utill.navigationController?.myPointer else {
-                return
-            }
-            let realm = try! Realm()
-            if let d = data {
-                realm.beginWrite()
-                loadData(d)
-                try! realm.commitWrite()
-                return
-            }
-            
-            if moneyTextField?.text?.isEmpty == true && tagTextField?.text?.isEmpty == true {
-                return
-            }
-            
-            let model = PaymentModel()
-            loadData(model)
-            model.locailIdentifier = Locale.current.identifier
-            model.latitude = mylocation.coordinate.latitude
-            model.longitude = mylocation.coordinate.longitude
-            model.id = "\(model.longitude) \(model.longitude) \(model.tag)"
-            model.datetime = Date()
-            realm.beginWrite()
-            realm.add(model, update: true)
-            try! realm.commitWrite()
+    @objc func onTouchDone(_ sender:UIBarButtonItem) {
+        guard let mylocation = Utill.navigationController?.myPointer else {
+            return
         }
+        let realm = try! Realm()
+        if let d = data {
+            realm.beginWrite()
+            loadData(d)
+            try! realm.commitWrite()
+            navigationController?.popViewController(animated: true)
+            return
+        }
+        
+        if moneyTextField?.text?.isEmpty == true && tagTextField?.text?.isEmpty == true {
+            return
+        }
+        
+        let model = PaymentModel()
+        loadData(model)
+        model.locailIdentifier = Locale.current.identifier
+        if let region = Locale.current.regionCode {
+            model.region = region
+        }
+        model.latitude = mylocation.coordinate.latitude
+        model.longitude = mylocation.coordinate.longitude
+        model.id = "\(model.longitude) \(model.longitude) \(model.tag)"
+        model.datetime = Date()
+        realm.beginWrite()
+        realm.add(model, update: true)
+        try! realm.commitWrite()
+        navigationController?.popViewController(animated: true)
     }
     
     private func loadData(_ model:PaymentModel) {
@@ -107,6 +109,7 @@ class MakePaymentTableViewController: UITableViewController {
             realm.add(objs, update: true)
             try! realm.commitWrite()
         }
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -114,12 +117,59 @@ class MakePaymentTableViewController: UITableViewController {
         DispatchQueue.main.async {
             self.tagTextField?.becomeFirstResponder()
         }
+        moneyTextField?.text = nil
+        tagTextField?.text = nil
         if let d = data {
             moneyTextField?.text = "\(abs(d.money))"
             tagTextField?.text = d.tag
         }
         for tf in [moneyTextField, tagTextField] {
             tf?.delegate = self
+        }
+        
+        title = ""
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.onTouchDone(_:)))
+
+        loadTagData()
+        switch pType {
+        case .minus:
+            title = "expenditure".localized
+        default:
+            title = "income".localized
+        }
+
+    }
+    
+    func loadTagData() {
+        DispatchQueue.global().async {
+            guard let point = Utill.navigationController?.myPointer.coordinate else {
+                return
+            }
+            let length:Double = 100
+            let la_min = point.latitude - length
+            let la_max = point.latitude + length
+            let lo_min = point.longitude - length
+            let lo_max = point.longitude + length
+            
+            let list = try! Realm().objects(PaymentModel.self).filter("latitude > %@ && latitude < %@ && longitude > %@ && longitude < %@",la_min, la_max, lo_min, lo_max)
+            var tags:[String] = []
+            for pay in list {
+                for tag in pay.tag.components(separatedBy: " ") {
+                    if tags.index(of: tag) == nil {
+                        if tag.isEmpty == false {
+                            tags.append(tag)
+                        }
+                    }
+                }
+            }
+            self.tagList = tags
+            DispatchQueue.main.async {
+                self.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
+            }
         }
     }
 }
@@ -137,7 +187,7 @@ extension MakePaymentTableViewController : UITextFieldDelegate {
 
 extension MakePaymentTableViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -146,6 +196,8 @@ extension MakePaymentTableViewController {
             return 2
         case 1:
             return tagList.count
+        case 2:
+            return totalTags.count
         default:
             return 0
         }
@@ -163,6 +215,11 @@ extension MakePaymentTableViewController {
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "tag", for: indexPath)
             let tag = tagList[indexPath.row]
+            cell.textLabel?.text = tag
+            return cell
+        case 2:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "tag", for: indexPath)
+            let tag = totalTags[indexPath.row]
             cell.textLabel?.text = tag.tag
             return cell
         default:
@@ -172,15 +229,11 @@ extension MakePaymentTableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        switch indexPath.section {
-        case 0:
-            break
-        case 1:
-            let tag = tagList[indexPath.row]
+        func appendTag(_ tag:String) {
             if let text = tagTextField?.text {
                 let list = text.components(separatedBy: " ")
                 if list.filter({ (t) -> Bool in
-                    return t == tag.tag
+                    return t == tag
                 }).count > 0 {
                     return
                 }
@@ -188,7 +241,16 @@ extension MakePaymentTableViewController {
             if tagTextField?.text?.isEmpty == false {
                 tagTextField?.text?.append(" ")
             }
-            tagTextField?.text?.append(tag.tag)
+            tagTextField?.text?.append(tag)
+        }
+        
+        switch indexPath.section {
+        case 0:
+            break
+        case 1:
+            appendTag(tagList[indexPath.row])
+        case 2:
+            appendTag(totalTags[indexPath.row].tag)
         default:
             break
         }
@@ -196,9 +258,17 @@ extension MakePaymentTableViewController {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 0:
-            return pType == .plus ? "수입" : "지출"
+            return pType == .plus ? "income".localized : "expenditure".localized
         case 1:
-            return "태그 선택"
+            if tagList.count == 0 {
+                return nil
+            }
+            return "suggest tag".localized
+        case 2:
+            if totalTags.count == 0 {
+                return nil
+            }
+            return "select tag".localized
         default:
             return nil            
         }

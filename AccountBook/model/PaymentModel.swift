@@ -18,6 +18,7 @@ class PaymentModel: Object {
     @objc dynamic var money:Int = 0
     @objc dynamic var datetime:Date? = nil
     @objc dynamic var locailIdentifier:String = ""
+    @objc dynamic var region:String = ""
     
     override static func primaryKey() -> String? {
         return "id"

@@ -16,6 +16,7 @@
 		1E2FB7571F936089009E1DD5 /* Utill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2FB7551F936089009E1DD5 /* Utill.swift */; };
 		1E2FB7581F936141009E1DD5 /* PaymentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2FB7521F936073009E1DD5 /* PaymentModel.swift */; };
 		1E2FB7591F936146009E1DD5 /* TagModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2FB7531F936073009E1DD5 /* TagModel.swift */; };
+		1E4DCEB31F94C26B00D3EAAF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1E4DCEB51F94C26B00D3EAAF /* Localizable.strings */; };
 		25D24855736FFF3C3AC1BEA7 /* Pods_AccountBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F726AA0F15343AB006D568E /* Pods_AccountBook.framework */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +32,10 @@
 		1E2FB7531F936073009E1DD5 /* TagModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagModel.swift; sourceTree = "<group>"; };
 		1E2FB7541F936089009E1DD5 /* MakePaymentTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakePaymentTableViewController.swift; sourceTree = "<group>"; };
 		1E2FB7551F936089009E1DD5 /* Utill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utill.swift; sourceTree = "<group>"; };
+		1E4DCEB61F94C2C200D3EAAF /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Main.strings; sourceTree = "<group>"; };
+		1E4DCEB71F94C2C300D3EAAF /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		1E4DCEB81F94C2C300D3EAAF /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		1E4DCEBA1F94C67C00D3EAAF /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7D921C85A91179A52A3D51E9 /* Pods-AccountBook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AccountBook.release.xcconfig"; path = "Pods/Target Support Files/Pods-AccountBook/Pods-AccountBook.release.xcconfig"; sourceTree = "<group>"; };
 		7F726AA0F15343AB006D568E /* Pods_AccountBook.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AccountBook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		86814267BA529B3720956B01 /* Pods-AccountBook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AccountBook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AccountBook/Pods-AccountBook.debug.xcconfig"; sourceTree = "<group>"; };
@@ -70,6 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				1E2FB73F1F935FD0009E1DD5 /* AppDelegate.swift */,
+				1E4DCEB51F94C26B00D3EAAF /* Localizable.strings */,
 				1E2FB7411F935FD0009E1DD5 /* ViewController.swift */,
 				1E2FB7431F935FD0009E1DD5 /* Main.storyboard */,
 				1E2FB7541F936089009E1DD5 /* MakePaymentTableViewController.swift */,
@@ -152,8 +158,8 @@
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				ko,
 			);
 			mainGroup = 1E2FB7331F935FD0009E1DD5;
 			productRefGroup = 1E2FB73D1F935FD0009E1DD5 /* Products */;
@@ -171,6 +177,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E2FB74A1F935FD0009E1DD5 /* LaunchScreen.storyboard in Resources */,
+				1E4DCEB31F94C26B00D3EAAF /* Localizable.strings in Resources */,
 				1E2FB7471F935FD0009E1DD5 /* Assets.xcassets in Resources */,
 				1E2FB7451F935FD0009E1DD5 /* Main.storyboard in Resources */,
 			);
@@ -255,6 +262,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				1E2FB7441F935FD0009E1DD5 /* Base */,
+				1E4DCEB61F94C2C200D3EAAF /* ko */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -263,8 +271,18 @@
 			isa = PBXVariantGroup;
 			children = (
 				1E2FB7491F935FD0009E1DD5 /* Base */,
+				1E4DCEB71F94C2C300D3EAAF /* ko */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		1E4DCEB51F94C26B00D3EAAF /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1E4DCEB81F94C2C300D3EAAF /* ko */,
+				1E4DCEBA1F94C67C00D3EAAF /* Base */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -274,6 +292,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -331,6 +350,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

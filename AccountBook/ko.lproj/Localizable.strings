@@ -1,0 +1,21 @@
+/* 
+  Localizable.strings
+  AccountBook
+
+  Created by Seo Changyul on 2017. 10. 16..
+  Copyright © 2017년 Seo Changyul. All rights reserved.
+*/
+"expenditure" = "지출";
+"income" = "수입";
+"sum" = "합계";
+"select tag" = "태그 선택";
+"tag" = "태그";
+"price" = "금액";
+"delete" = "삭제";
+"Do you want to delete it?" = "삭제 할까요?";
+"confirm" = "확인";
+"cancel" = "취소";
+"edit" = "수정";
+"suggest tag" = "추천 태그";
+"select tag" = "태그 선택";
+

@@ -1,0 +1,21 @@
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "1IR-kI-cA5"; */
+"1IR-kI-cA5.text" = "Title";
+
+/* Class = "UITextField"; placeholder = "금액"; ObjectID = "M91-Xb-bZ6"; */
+"M91-Xb-bZ6.placeholder" = "금액";
+
+/* Class = "UILabel"; text = "Detail"; ObjectID = "T6O-8J-ecR"; */
+"T6O-8J-ecR.text" = "Detail";
+
+/* Class = "UILabel"; text = "수입"; ObjectID = "acs-KB-qJA"; */
+"acs-KB-qJA.text" = "수입";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "oq7-C8-JuR"; */
+"oq7-C8-JuR.text" = "Title";
+
+/* Class = "UITextField"; placeholder = "태그"; ObjectID = "tbe-bT-Ke9"; */
+"tbe-bT-Ke9.placeholder" = "태그";
+
+/* Class = "UILabel"; text = "지출"; ObjectID = "wXH-91-Bj9"; */
+"wXH-91-Bj9.text" = "지출";
