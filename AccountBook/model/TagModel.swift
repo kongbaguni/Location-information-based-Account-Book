@@ -10,7 +10,8 @@ import Foundation
 import RealmSwift
 class TagModel: Object {
     @objc dynamic var tag:String = ""
-    
+    //수입인가? false 면 지출
+    @objc dynamic var isPlus:Bool = false
     override static func primaryKey() -> String? {
         return "tag"
     }

@@ -29,7 +29,7 @@ class MakePaymentTableViewController: UITableViewController {
     
     //전체 태그
     var totalTags:Results<TagModel> {
-        return try! Realm().objects(TagModel.self)
+        return try! Realm().objects(TagModel.self).filter("isPlus = %@",self.pType == .plus)
     }
     
     var moneyTextField:UITextField? {
@@ -96,9 +96,10 @@ class MakePaymentTableViewController: UITableViewController {
             if text.isEmpty {
                 continue
             }
-            let model = TagModel()
-            model.tag = text
-            objs.append(model)
+            let tmodel = TagModel()
+            tmodel.isPlus = model.money > 0
+            tmodel.tag = text
+            objs.append(tmodel)
         }
         let realm = try! Realm()
         if realm.isInWriteTransaction {
@@ -152,7 +153,9 @@ class MakePaymentTableViewController: UITableViewController {
             let lo_min = point.longitude - length
             let lo_max = point.longitude + length
             
-            let list = try! Realm().objects(PaymentModel.self).filter("latitude > %@ && latitude < %@ && longitude > %@ && longitude < %@",la_min, la_max, lo_min, lo_max)
+            var list = try! Realm().objects(PaymentModel.self).filter("latitude > %@ && latitude < %@ && longitude > %@ && longitude < %@",la_min, la_max, lo_min, lo_max)
+            list = self.pType == .plus ? list.filter("money > %@", 0) : list.filter("money < %@", 0)
+            
             var tags:[String] = []
             for pay in list {
                 for tag in pay.tag.components(separatedBy: " ") {
@@ -240,6 +243,9 @@ extension MakePaymentTableViewController {
                 tagTextField?.text?.append(" ")
             }
             tagTextField?.text?.append(tag)
+            DispatchQueue.main.async {
+                tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+            }
         }
         
         switch indexPath.section {
