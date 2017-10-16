@@ -21,7 +21,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var mapView: MKMapView!
     
-    let makeViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "makePayment") as! MakePaymentTableViewController
     
     var locationManager: CLLocationManager? {
         return Utill.navigationController?.locationManager
@@ -231,6 +230,7 @@ extension ViewController:UITableViewDelegate {
             shopPointer.coordinate = payment.coordinate2D
             findMyPos(payment.coordinate2D)
         case 2:
+            let makeViewController = MakePaymentTableViewController.viewConroller
             makeViewController.data = nil
             switch indexPath.row {
             case 0:
@@ -284,10 +284,10 @@ extension ViewController:UITableViewDelegate {
             }),
             UITableViewRowAction(style: .normal, title: "edit".localized, handler: { (action, indexPath) in
                 let data:PaymentModel = self.paymentList[indexPath.row]
-                
-                self.makeViewController.data = data
-                self.makeViewController.pType = data.money < 0 ? .minus : .plus
-                self.navigationController?.pushViewController(self.makeViewController, animated: true)
+                let makeViewController = MakePaymentTableViewController.viewConroller
+                makeViewController.data = data
+                makeViewController.pType = data.money < 0 ? .minus : .plus
+                self.navigationController?.pushViewController(makeViewController, animated: true)
             })
         ]
     }

@@ -15,6 +15,9 @@ class InputCell:UITableViewCell {
 }
 
 class MakePaymentTableViewController: UITableViewController {
+    class var viewConroller:MakePaymentTableViewController {
+        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "makePayment") as! MakePaymentTableViewController
+    }
     enum PaymentType {
         case plus
         case minus
