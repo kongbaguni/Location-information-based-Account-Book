@@ -150,7 +150,6 @@ extension ViewController:UITableViewDataSource {
         case 1:
             let locale = paymentLocaleList[indexPath.row]
             let payList = paymentList.filter("region = %@",locale.regionCode!)
-            let z = payList.count
             let a = payList.filter("money < 0").count
             let b = payList.filter("money > 0").count
             cell.textLabel?.text = "지출 \(a) 건, 수입 \(b) 건"
@@ -182,7 +181,7 @@ extension ViewController:UITableViewDataSource {
             if paymentList.count == 0 {
                 return nil
             }
-            return "expenditure".localized
+            return "income,expenditure".localized
         case 1:
             if paymentLocaleList.count == 0 {
                 return nil
@@ -215,7 +214,11 @@ extension ViewController:UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return CGFloat.leastNormalMagnitude
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return " "
     }
     
 }

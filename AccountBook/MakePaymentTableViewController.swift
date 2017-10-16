@@ -114,9 +114,6 @@ class MakePaymentTableViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        DispatchQueue.main.async {
-            self.tagTextField?.becomeFirstResponder()
-        }
         moneyTextField?.text = nil
         tagTextField?.text = nil
         if let d = data {
@@ -126,7 +123,7 @@ class MakePaymentTableViewController: UITableViewController {
         for tf in [moneyTextField, tagTextField] {
             tf?.delegate = self
         }
-        
+        self.tagTextField?.becomeFirstResponder()
         title = ""
     }
     
@@ -149,7 +146,7 @@ class MakePaymentTableViewController: UITableViewController {
             guard let point = Utill.navigationController?.myPointer.coordinate else {
                 return
             }
-            let length:Double = 100
+            let length:Double = 0.0001
             let la_min = point.latitude - length
             let la_max = point.latitude + length
             let lo_min = point.longitude - length
@@ -168,7 +165,8 @@ class MakePaymentTableViewController: UITableViewController {
             }
             self.tagList = tags
             DispatchQueue.main.async {
-                self.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
+                self.tableView.reloadData()
+                self.tagTextField?.becomeFirstResponder()
             }
         }
     }
@@ -273,8 +271,48 @@ extension MakePaymentTableViewController {
             return nil            
         }
     }
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch indexPath.section {
+        case 0:
+            return 80
+        default:
+            return 50
+        }
+    }
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return CGFloat.leastNormalMagnitude
+    }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        switch indexPath.section {
+        case 2:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        return [
+            UITableViewRowAction(style: .destructive, title: "delete".localized, handler: { (action, indexPath) in
+                let ac = UIAlertController(title: nil, message: "Do you want to delete it?".localized, preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "confirm".localized, style: .default, handler: { (action) in
+                    let tag = self.totalTags[indexPath.row]
+                    let realm = try! Realm()
+                    realm.beginWrite()
+                    realm.delete(tag)
+                    try! realm.commitWrite()
+                    if self.totalTags.count > 0 {
+                        tableView.deleteRows(at: [indexPath], with: .automatic)
+                    }
+                    else {
+                        tableView.reloadData()
+                    }
+                }))
+                ac.addAction(UIAlertAction(title: "cancel".localized, style: .cancel, handler: nil))
+                self.present(ac, animated: true, completion: nil)
+            })
+        ]
     }
 }
