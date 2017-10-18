@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreLocation
 import RealmSwift
-
+import TagListView
 class NavigationController: UINavigationController  {
     let locationManager = CLLocationManager()
     let myPointer = MKPointAnnotation()
@@ -33,8 +33,11 @@ class ViewController: UIViewController {
     let shopPointer = MKPointAnnotation()
     
     var paymentList:Results<PaymentModel> {
-        let todayStart = Date().toString("yyyy-MM-dd", locale: Locale.current).toDate("yyyy-MM-dd")!
-        return try! Realm().objects(PaymentModel.self).filter("%@ <= datetime", todayStart)
+        var list = try! Realm().objects(PaymentModel.self)
+        if let todayStart = Date().toString("yyyy-MM-dd", locale: Locale.current).toDate("yyyy-MM-dd") {
+            list = list.filter("%@ <= datetime", todayStart)
+        }
+        return list
     }
     
     var paymentLocaleList:[Locale] {
@@ -95,13 +98,36 @@ class ViewController: UIViewController {
         mapView.setRegion(region, animated: true)
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let id = segue.identifier else {
+            return
+        }
+        switch id {
+        case "showTagsPayment":
+            if let vc = segue.destination as? TagsPayListTableViewController {
+                vc.tag = sender as? String
+                vc.tableView.reloadData()
+            }
+        case "makePayment":
+            if let vc = segue.destination as? MakePaymentTableViewController {
+                if let type = sender as? MakePaymentTableViewController.PaymentType {
+                    vc.pType = type
+                }
+                if let data = sender as? PaymentModel {
+                    vc.data = data
+                    vc.pType = data.money < 0 ? .minus : .plus
+                }
+            }
+        default:
+            break
+        }
+        
+    }
+    
 }
 
 extension ViewController:CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let _ = tableView.indexPathForSelectedRow {
-            return
-        }
         if let location = locations.first {
             myPointer?.coordinate = location.coordinate
         }
@@ -130,23 +156,16 @@ extension ViewController:UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         switch indexPath.section {
         case 0:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "pay", for: indexPath) as! PaymentTableViewCell
             let payment = self.paymentList[indexPath.row]
-            cell.textLabel?.numberOfLines = 2
-            let attText = NSMutableAttributedString()
-            attText.append(NSAttributedString(string: payment.tag, attributes: [NSAttributedStringKey.font : UIFont.boldSystemFont(ofSize: 13)]))
-            attText.append(NSAttributedString(string: "\n"))
-            attText.append(NSAttributedString(
-                string: payment.datetime!.toString("ah:mm", locale: payment.locale),
-                attributes: [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 8) ]))
-            cell.textLabel?.attributedText = attText
+            cell.loadData(payment)
+            cell.tagListView.delegate = self
+            return cell
             
-            
-            cell.detailTextLabel?.text = payment.money.toMoneyFormatString(payment.locale)
-            cell.detailTextLabel?.textColor = payment.money >= 0 ? .black : .red
         case 1:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "sum", for: indexPath)
             let locale = paymentLocaleList[indexPath.row]
             let payList = paymentList.filter("region = %@",locale.regionCode!)
             let a = payList.filter("money < 0").count
@@ -158,6 +177,7 @@ extension ViewController:UITableViewDataSource {
             }
             cell.detailTextLabel?.text = total.toMoneyFormatString(locale)
             cell.detailTextLabel?.textColor = total >= 0 ? .black : .red
+            return cell
 
         case 2:
             switch indexPath.row {
@@ -171,7 +191,15 @@ extension ViewController:UITableViewDataSource {
         default:
             break
         }
-        return cell
+        return UITableViewCell()
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch indexPath.section {
+        case 0:
+            return 80
+        default:
+            return 50
+        }
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -230,25 +258,20 @@ extension ViewController:UITableViewDelegate {
             shopPointer.coordinate = payment.coordinate2D
             findMyPos(payment.coordinate2D)
         case 2:
-            let makeViewController = MakePaymentTableViewController.viewConroller
-            makeViewController.data = nil
             switch indexPath.row {
             case 0:
-                makeViewController.pType = .plus
-                self.navigationController?.pushViewController(makeViewController, animated: true)
+                self.performSegue(withIdentifier: "makePayment", sender: MakePaymentTableViewController.PaymentType.plus)
             case 1:
-                makeViewController.pType = .minus
-                self.navigationController?.pushViewController(makeViewController, animated: true)
+                self.performSegue(withIdentifier: "makePayment", sender: MakePaymentTableViewController.PaymentType.minus)
             default:
                 break
             }
-            tableView.deselectRow(at: indexPath, animated: true)
             findMyPos(myPointer?.coordinate)
         default:
-            tableView.deselectRow(at: indexPath, animated: true)
             findMyPos(myPointer?.coordinate)
             break
         }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         switch indexPath.section {
@@ -284,11 +307,16 @@ extension ViewController:UITableViewDelegate {
             }),
             UITableViewRowAction(style: .normal, title: "edit".localized, handler: { (action, indexPath) in
                 let data:PaymentModel = self.paymentList[indexPath.row]
-                let makeViewController = MakePaymentTableViewController.viewConroller
-                makeViewController.data = data
-                makeViewController.pType = data.money < 0 ? .minus : .plus
-                self.navigationController?.pushViewController(makeViewController, animated: true)
+                self.performSegue(withIdentifier: "makePayment", sender: data)
             })
         ]
+    }
+}
+
+
+extension ViewController : TagListViewDelegate {
+    func tagPressed(_ title: String, tagView: TagView, sender: TagListView) {
+        print(title)
+        self.performSegue(withIdentifier: "showTagsPayment", sender: title)
     }
 }

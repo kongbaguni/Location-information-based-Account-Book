@@ -15,6 +15,7 @@ class InputCell:UITableViewCell {
 }
 
 class MakePaymentTableViewController: UITableViewController {
+    
     class var viewConroller:MakePaymentTableViewController {
         return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "makePayment") as! MakePaymentTableViewController
     }
@@ -26,6 +27,8 @@ class MakePaymentTableViewController: UITableViewController {
     var pType:PaymentType = .minus
     
     var data:PaymentModel? = nil
+    
+    var tagSearchLength:Double = 0.0001
     
     //추천태그 목록
     var tagList:[String] = []
@@ -48,6 +51,13 @@ class MakePaymentTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        switch pType {
+        case .minus:
+            title = "expenditure".localized
+        default:
+            title = "income".localized
+        }
+
     }
     
     @objc func onTouchDone(_ sender:UIBarButtonItem) {
@@ -128,7 +138,6 @@ class MakePaymentTableViewController: UITableViewController {
             tf?.delegate = self
         }
         self.tagTextField?.becomeFirstResponder()
-        title = ""
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -136,21 +145,15 @@ class MakePaymentTableViewController: UITableViewController {
         navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.onTouchDone(_:)))
 
         loadTagData()
-        switch pType {
-        case .minus:
-            title = "expenditure".localized
-        default:
-            title = "income".localized
-        }
 
     }
     
-    func loadTagData() {
+    @objc func loadTagData() {
         DispatchQueue.global().async {
             guard let point = Utill.navigationController?.myPointer.coordinate else {
                 return
             }
-            let length:Double = 0.0001
+            let length = self.tagSearchLength
             let la_min = point.latitude - length
             let la_max = point.latitude + length
             let lo_min = point.longitude - length
@@ -170,6 +173,12 @@ class MakePaymentTableViewController: UITableViewController {
                 }
             }
             self.tagList = tags
+            if tags.count == 0 {
+                self.tagSearchLength *= 2
+                if self.tagSearchLength < 0.001 {
+                    self.perform(#selector(self.loadTagData))
+                }
+            }
             DispatchQueue.main.async {
                 self.tableView.reloadData()
                 self.tagTextField?.becomeFirstResponder()
