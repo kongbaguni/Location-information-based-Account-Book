@@ -61,7 +61,7 @@ class ViewController: UIViewController {
         view.addSubview(mapView)
         title = Date().toString("yyyy-MM-dd", locale: Locale.current)
         
-//        navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.onTouchRightButton(_:)))
+        navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .bookmarks, target: self, action: #selector(self.onTouchRightButton(_:)))
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -87,6 +87,7 @@ class ViewController: UIViewController {
     
     
     @objc func onTouchRightButton(_ sender:UIBarButtonItem) {
+        self.performSegue(withIdentifier: "showTagList", sender: nil)
         
     }
     
