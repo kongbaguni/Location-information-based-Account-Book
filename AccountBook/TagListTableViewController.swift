@@ -14,28 +14,46 @@ class TagListTableViewController: UITableViewController {
     var tags:Results<TagModel> {
         return try! Realm().objects(TagModel.self)
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "tag list".localized
     }
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return 2
     }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tags.count
-    }
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let tag = tags[indexPath.row]
-        let tagstr = tag.tag
-        cell.textLabel?.text = tagstr
-        DispatchQueue.global().async {
-            let count = try! Realm().objects(PaymentModel.self).filter("tag contains[C] %@",tagstr).count
-            DispatchQueue.main.async {
-                cell.detailTextLabel?.text = "\(count)"
-            }
+        switch section {
+        case 0:
+            return tags.count
+        case 1:
+            return 1
+        default:
+            return 0
         }
-        return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch indexPath.section {
+        case 0:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+            let tag = tags[indexPath.row]
+            let tagstr = tag.tag
+            cell.textLabel?.text = tagstr
+            DispatchQueue.global().async {
+                let count = try! Realm().objects(PaymentModel.self).filter("tag contains[C] %@",tagstr).count
+                DispatchQueue.main.async {
+                    cell.detailTextLabel?.text = "\(count)"
+                }
+            }
+            return cell
+        default:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "total", for: indexPath)
+            cell.textLabel?.text = "total".localized
+            return cell
+        }
     }
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -47,7 +65,14 @@ class TagListTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.performSegue(withIdentifier: "showTagsPayment", sender: tags[indexPath.row])
+        switch indexPath.section {
+        case 0:
+            self.performSegue(withIdentifier: "showTagsPayment", sender: tags[indexPath.row])
+        case 1:
+            self.performSegue(withIdentifier: "showTagsPayment", sender: nil)
+        default:
+            return
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

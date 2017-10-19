@@ -97,7 +97,7 @@ class ViewController: UIViewController {
         guard let c = cordinate else {
             return
         }
-        let region = MKCoordinateRegionMakeWithDistance(c, 500, 500)
+        let region = MKCoordinateRegionMakeWithDistance(c, 200, 200)
         mapView.setRegion(region, animated: true)
     }
     

@@ -61,6 +61,15 @@ class MakePaymentTableViewController: UITableViewController {
             title = "income".localized
         }
         mapView.addAnnotation(self.pointer)
+        mapView.isScrollEnabled = false
+        mapView.isZoomEnabled = false
+        mapView.isPitchEnabled = false
+        mapView.isRotateEnabled = false
+
+        if let point = self.point {
+            let region = MKCoordinateRegionMakeWithDistance(point, 200, 200)
+            mapView.setRegion(region, animated: false)
+        }
 
     }
     
@@ -151,17 +160,21 @@ class MakePaymentTableViewController: UITableViewController {
         loadTagData()
 
     }
-    
-    @objc func loadTagData() {
+    var point:CLLocationCoordinate2D? {
         guard var point = Utill.navigationController?.myPointer.coordinate else {
-            return
+            return nil
         }
         if let data = self.data {
             point = data.coordinate2D
         }
+        return point
+    }
+    
+    @objc func loadTagData() {
+        guard let point = self.point else {
+            return
+        }
         pointer.coordinate = point
-        let region = MKCoordinateRegionMakeWithDistance(point, 200, 200)
-        mapView.setRegion(region, animated: false)
         
         DispatchQueue.global().async {
             let length = self.tagSearchLength

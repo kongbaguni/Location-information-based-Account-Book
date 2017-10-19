@@ -18,17 +18,15 @@ class TagsPayListTableViewController: UITableViewController {
         }
     }
     
-    var payList:Results<PaymentModel>? {
+    var payList:Results<PaymentModel> {
+        let list = try! Realm().objects(PaymentModel.self)
         if let tag = self.tag {
-            return try! Realm().objects(PaymentModel.self).filter("tag contains[C] %@", tag)
+            return list.filter("tag contains[C] %@", tag)
         }
-        return nil
+        return list
     }
     
     var paymentLocaleList:[Locale] {
-        guard let payList  = self.payList else {
-            return []
-        }
         var list:[Locale] = []
         for pay in payList {
             if list.filter({ (locale) -> Bool in
@@ -76,10 +74,7 @@ class TagsPayListTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            if let list = payList {
-                return list.count
-            }
-            return 0
+            return payList.count
         case 1:
             return paymentLocaleList.count
         default:
@@ -91,14 +86,14 @@ class TagsPayListTableViewController: UITableViewController {
         switch indexPath.section {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: "pay", for: indexPath) as! PaymentTableViewCell
-            let pay = payList![indexPath.row]
+            let pay = payList[indexPath.row]
             cell.loadData(pay, timeFormat: "yyyy-MM-dd ah:mm")
             cell.tagListView.delegate = self
             return cell
         default:
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
             let locale = paymentLocaleList[indexPath.row]
-            let payList = self.payList!.filter("region = %@",locale.regionCode!)
+            let payList = self.payList.filter("region = %@",locale.regionCode!)
             let a = payList.filter("money < 0").count
             let b = payList.filter("money > 0").count
             var title = ""
@@ -135,9 +130,7 @@ class TagsPayListTableViewController: UITableViewController {
         return true
     }
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        guard let pays = self.payList else {
-            return nil
-        }
+        let pays = self.payList
         return [
             UITableViewRowAction(style: .destructive, title: "delete".localized, handler: { (action, indexPath) in
                 let ac = UIAlertController(title: nil, message: "Do you want to delete it?".localized, preferredStyle: .alert)
@@ -178,9 +171,9 @@ class TagsPayListTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
-            if let pay = payList?[indexPath.row] {
-                self.performSegue(withIdentifier: "showMapView", sender: pay)
-            }
+            let pay = payList[indexPath.row]
+            self.performSegue(withIdentifier: "showMapView", sender: pay)
+
         default:
             tableView.deselectRow(at: indexPath, animated: true)
         }
