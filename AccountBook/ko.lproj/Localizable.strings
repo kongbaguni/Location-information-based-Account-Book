@@ -6,7 +6,11 @@
   Copyright © 2017년 Seo Changyul. All rights reserved.
 */
 "expenditure" = "지출";
+"expenditure: %d" = "지출 %d건";
+
 "income" = "수입";
+"income: %d" = "수입 %d건";
+
 "income,expenditure" = "수입,지출";
 "sum" = "합계";
 "select tag" = "태그 선택";

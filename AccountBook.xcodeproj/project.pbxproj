@@ -20,6 +20,7 @@
 		1E4DCEBE1F9632B500D3EAAF /* PaymentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4DCEBD1F9632B500D3EAAF /* PaymentTableViewCell.swift */; };
 		1E4DCEC01F97939800D3EAAF /* TagsPayListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4DCEBF1F97939800D3EAAF /* TagsPayListTableViewController.swift */; };
 		1E4DCEC41F981DA200D3EAAF /* TagListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4DCEC31F981DA200D3EAAF /* TagListTableViewController.swift */; };
+		1E4DCEC91F98D56E00D3EAAF /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4DCEC81F98D56E00D3EAAF /* MapViewController.swift */; };
 		25D24855736FFF3C3AC1BEA7 /* Pods_AccountBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F726AA0F15343AB006D568E /* Pods_AccountBook.framework */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +43,7 @@
 		1E4DCEBD1F9632B500D3EAAF /* PaymentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTableViewCell.swift; sourceTree = "<group>"; };
 		1E4DCEBF1F97939800D3EAAF /* TagsPayListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsPayListTableViewController.swift; sourceTree = "<group>"; };
 		1E4DCEC31F981DA200D3EAAF /* TagListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagListTableViewController.swift; sourceTree = "<group>"; };
+		1E4DCEC81F98D56E00D3EAAF /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		7D921C85A91179A52A3D51E9 /* Pods-AccountBook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AccountBook.release.xcconfig"; path = "Pods/Target Support Files/Pods-AccountBook/Pods-AccountBook.release.xcconfig"; sourceTree = "<group>"; };
 		7F726AA0F15343AB006D568E /* Pods_AccountBook.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AccountBook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		86814267BA529B3720956B01 /* Pods-AccountBook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AccountBook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AccountBook/Pods-AccountBook.debug.xcconfig"; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 				1E2FB7541F936089009E1DD5 /* MakePaymentTableViewController.swift */,
 				1E4DCEBF1F97939800D3EAAF /* TagsPayListTableViewController.swift */,
 				1E4DCEC31F981DA200D3EAAF /* TagListTableViewController.swift */,
+				1E4DCEC81F98D56E00D3EAAF /* MapViewController.swift */,
 				1E2FB7511F936073009E1DD5 /* model */,
 				1E2FB7461F935FD0009E1DD5 /* Assets.xcassets */,
 				1E2FB7481F935FD0009E1DD5 /* LaunchScreen.storyboard */,
@@ -260,6 +263,7 @@
 				1E2FB7591F936146009E1DD5 /* TagModel.swift in Sources */,
 				1E2FB7571F936089009E1DD5 /* Utill.swift in Sources */,
 				1E2FB7421F935FD0009E1DD5 /* ViewController.swift in Sources */,
+				1E4DCEC91F98D56E00D3EAAF /* MapViewController.swift in Sources */,
 				1E4DCEC41F981DA200D3EAAF /* TagListTableViewController.swift in Sources */,
 				1E4DCEC01F97939800D3EAAF /* TagsPayListTableViewController.swift in Sources */,
 				1E2FB7561F936089009E1DD5 /* MakePaymentTableViewController.swift in Sources */,

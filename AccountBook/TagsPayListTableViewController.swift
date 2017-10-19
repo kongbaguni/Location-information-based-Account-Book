@@ -51,12 +51,18 @@ class TagsPayListTableViewController: UITableViewController {
         }
         switch id {
         case "editPayment":
-            if let vc = segue.destination as? MakePaymentTableViewController {
-                if let data = sender as? PaymentModel {
-                    vc.data = data
-                    vc.pType = data.money < 0 ? .minus : .plus
-                }
+            if let vc = segue.destination as? MakePaymentTableViewController ,
+                let data = sender as? PaymentModel {
+                vc.data = data
+                vc.pType = data.money < 0 ? .minus : .plus
             }
+        case "showMapView":
+            if let vc = segue.destination as? MapViewController,
+                let data = sender as? PaymentModel {
+                vc.pointer.coordinate = data.coordinate2D
+                vc.title = data.money.toMoneyFormatString(data.locale)
+            }
+            
         default:
             break
         }
@@ -95,7 +101,17 @@ class TagsPayListTableViewController: UITableViewController {
             let payList = self.payList!.filter("region = %@",locale.regionCode!)
             let a = payList.filter("money < 0").count
             let b = payList.filter("money > 0").count
-            cell.textLabel?.text = "지출 \(a) 건, 수입 \(b) 건"
+            var title = ""
+            if a > 0 {
+                title.append(String(format:"expenditure: %d".localized, a))
+            }
+            if b < 0 {
+                if title != "" {
+                    title.append(", ")
+                }
+                title.append(String(format:"income: %d".localized, b))
+            }
+            cell.textLabel?.text = title
             var total = 0
             for pay in payList {
                 total += pay.money
@@ -154,8 +170,21 @@ class TagsPayListTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return CGFloat.leastNormalMagnitude
     }
+    
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return CGFloat.leastNormalMagnitude
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.section {
+        case 0:
+            if let pay = payList?[indexPath.row] {
+                self.performSegue(withIdentifier: "showMapView", sender: pay)
+            }
+        default:
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+        
     }
 
 }

@@ -20,7 +20,7 @@ class PaymentTableViewCell: UITableViewCell {
         if let time = pay.datetime {
             timeLabel.text = time.toString(timeFormat, locale: pay.locale)
         }
-        moneyLabel.text = "\(pay.money)"
+        moneyLabel.text = pay.money.toMoneyFormatString(pay.locale)
         moneyLabel.textColor = pay.money < 0 ? .red : .black
     }
     

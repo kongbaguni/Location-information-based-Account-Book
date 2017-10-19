@@ -283,6 +283,30 @@
             </objects>
             <point key="canvasLocation" x="1038" y="820"/>
         </scene>
+        <!--Map View Controller-->
+        <scene sceneID="q70-xm-cI3">
+            <objects>
+                <viewController id="1qM-N3-q5r" customClass="MapViewController" customModule="AccountBook" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="m6m-dc-u1Q">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="fLm-kS-8l3">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </mapView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="KNT-B4-J8y"/>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="fLm-kS-8l3" id="JWe-Zf-DT4"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="meh-lf-D7G" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1890.4000000000001" y="55.322338830584712"/>
+        </scene>
         <!--Tag List Table View Controller-->
         <scene sceneID="Z8J-7p-ugW">
             <objects>
@@ -334,7 +358,7 @@
         <scene sceneID="Knr-9r-EpW">
             <objects>
                 <tableViewController id="ZYr-wv-hV8" customClass="TagsPayListTableViewController" customModule="AccountBook" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="geW-KI-nxl">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="geW-KI-nxl">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -445,6 +469,7 @@
                     </tableView>
                     <connections>
                         <segue destination="OZZ-IZ-Wgz" kind="show" identifier="editPayment" id="hpS-Yi-nhE"/>
+                        <segue destination="1qM-N3-q5r" kind="show" identifier="showMapView" id="y4w-ps-pJc"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vqe-iG-INN" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -453,7 +478,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="sFb-Af-xcw"/>
-        <segue reference="zrM-mc-wPc"/>
+        <segue reference="iXn-v8-7KY"/>
+        <segue reference="hpS-Yi-nhE"/>
     </inferredMetricsTieBreakers>
 </document>

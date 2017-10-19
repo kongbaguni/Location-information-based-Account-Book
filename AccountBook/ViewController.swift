@@ -51,7 +51,8 @@ class ViewController: UIViewController {
         }
         return list
     }
-    
+    var isSetFirstPos:Bool = false
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,6 +61,7 @@ class ViewController: UIViewController {
         locationManager?.desiredAccuracy = kCLLocationAccuracyBest
         view.addSubview(mapView)
         title = Date().toString("yyyy-MM-dd", locale: Locale.current)
+        
         
         navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .bookmarks, target: self, action: #selector(self.onTouchRightButton(_:)))
         
@@ -131,6 +133,10 @@ extension ViewController:CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
             myPointer?.coordinate = location.coordinate
+            if isSetFirstPos == false {
+                findMyPos(location.coordinate)
+                isSetFirstPos = true
+            }
         }
     }
     func locationManager(_ manager: CLLocationManager, didVisit visit: CLVisit) {
@@ -171,7 +177,17 @@ extension ViewController:UITableViewDataSource {
             let payList = paymentList.filter("region = %@",locale.regionCode!)
             let a = payList.filter("money < 0").count
             let b = payList.filter("money > 0").count
-            cell.textLabel?.text = "지출 \(a) 건, 수입 \(b) 건"
+            var title = ""
+            if a > 0 {
+                title.append(String(format:"expenditure: %d".localized, a))
+            }
+            if b < 0 {
+                if title != "" {
+                    title.append(", ")
+                }
+                title.append(String(format:"income: %d".localized, b))
+            }
+            cell.textLabel?.text = title
             var total = 0
             for pay in payList {
                 total += pay.money
