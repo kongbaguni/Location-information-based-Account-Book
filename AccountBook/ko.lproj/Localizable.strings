@@ -21,6 +21,6 @@
 "confirm" = "확인";
 "cancel" = "취소";
 "edit" = "수정";
-"suggest tag" = "추천 태그";
+"Location info suggest tag" = "위치정보 추천태그";
 "select tag" = "태그 선택";
 "tag list" = "태그 목록";

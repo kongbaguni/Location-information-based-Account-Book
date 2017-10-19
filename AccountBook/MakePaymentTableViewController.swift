@@ -292,7 +292,7 @@ extension MakePaymentTableViewController {
             if tagList.count == 0 {
                 return nil
             }
-            return "suggest tag".localized
+            return "Location info suggest tag".localized
         case 2:
             if totalTags.count == 0 {
                 return nil

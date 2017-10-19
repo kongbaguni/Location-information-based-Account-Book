@@ -16,12 +16,9 @@ class MapViewController: UIViewController {
     var isAnimated = false
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         mapView.addAnnotation(pointer)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
         let region = MKCoordinateRegionMakeWithDistance(pointer.coordinate, 200, 200)
         mapView.setRegion(region, animated: isAnimated)
-    }
+    }    
 }
