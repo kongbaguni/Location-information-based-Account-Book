@@ -9,13 +9,16 @@
 import Foundation
 import UIKit
 import RealmSwift
+import MapKit
+
 class InputCell:UITableViewCell {
     @IBOutlet weak var textField: UITextField!
     
 }
 
 class MakePaymentTableViewController: UITableViewController {
-    
+    let mapView = MKMapView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 80))
+    let pointer = MKPointAnnotation()
     class var viewConroller:MakePaymentTableViewController {
         return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "makePayment") as! MakePaymentTableViewController
     }
@@ -57,6 +60,7 @@ class MakePaymentTableViewController: UITableViewController {
         default:
             title = "income".localized
         }
+        mapView.addAnnotation(self.pointer)
 
     }
     
@@ -149,10 +153,17 @@ class MakePaymentTableViewController: UITableViewController {
     }
     
     @objc func loadTagData() {
+        guard var point = Utill.navigationController?.myPointer.coordinate else {
+            return
+        }
+        if let data = self.data {
+            point = data.coordinate2D
+        }
+        pointer.coordinate = point
+        let region = MKCoordinateRegionMakeWithDistance(point, 200, 200)
+        mapView.setRegion(region, animated: false)
+        
         DispatchQueue.global().async {
-            guard let point = Utill.navigationController?.myPointer.coordinate else {
-                return
-            }
             let length = self.tagSearchLength
             let la_min = point.latitude - length
             let la_max = point.latitude + length
@@ -179,9 +190,11 @@ class MakePaymentTableViewController: UITableViewController {
                     self.perform(#selector(self.loadTagData))
                 }
             }
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-                self.tagTextField?.becomeFirstResponder()
+            if tags.count > 0 {
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                    self.tagTextField?.becomeFirstResponder()
+                }
             }
         }
     }
@@ -289,6 +302,14 @@ extension MakePaymentTableViewController {
             return nil            
         }
     }
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        switch section {
+        case 1:
+            return mapView
+        default:
+            return nil
+        }
+    }
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.section {
         case 0:
@@ -299,7 +320,12 @@ extension MakePaymentTableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return CGFloat.leastNormalMagnitude
+        switch section {
+        case 1:
+            return 80
+        default:
+            return CGFloat.leastNormalMagnitude
+        }
     }
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
