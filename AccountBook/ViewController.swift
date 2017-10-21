@@ -37,8 +37,6 @@ class ViewController: UIViewController {
     private var _calendar:FSCalendar? = nil
     var calendarView: FSCalendar? {
         if let view = _calendar {
-            view.delegate = self
-            view.dataSource = self
             return view
         }
         if let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CalendarTableViewCell {
@@ -151,6 +149,11 @@ class ViewController: UIViewController {
                     vc.data = data
                     vc.pType = data.money < 0 ? .minus : .plus
                 }
+            }
+        case "showMap":
+            if let vc = segue.destination as? MapViewController,
+                let pay = sender as? PaymentModel {
+                vc.pointer.coordinate = pay.coordinate2D
             }
         default:
             break
@@ -333,8 +336,7 @@ extension ViewController:UITableViewDelegate {
             findMyPos(Utill.navigationController?.myPosition)
         case 1:
             let payment = self.paymentList[indexPath.row]
-            shopPointer.coordinate = payment.coordinate2D
-            findMyPos(payment.coordinate2D)
+            self.performSegue(withIdentifier: "showMap", sender: payment)
         case 3:
             switch indexPath.row {
             case 0:
@@ -351,7 +353,7 @@ extension ViewController:UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         switch indexPath.section {
-        case 0:
+        case 1:
             return true
         default:
             break
@@ -412,7 +414,7 @@ extension ViewController : FSCalendarDelegate {
     }
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         self.selectedDate = date
-//        self.title = date.toString("yyyy-MM-dd")
+        tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
         self.tableView.reloadData()
     }
 

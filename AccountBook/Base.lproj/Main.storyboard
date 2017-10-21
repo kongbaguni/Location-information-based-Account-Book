@@ -34,7 +34,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelectionDuringEditing="YES" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" estimatedSectionHeaderHeight="-1" sectionFooterHeight="28" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="H7m-4z-Tgf">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelectionDuringEditing="YES" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" estimatedSectionHeaderHeight="-1" sectionFooterHeight="28" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="H7m-4z-Tgf">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="0.96999999999999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -219,6 +219,7 @@
                         <segue destination="ZYr-wv-hV8" kind="show" identifier="showTagsPayment" id="iXn-v8-7KY"/>
                         <segue destination="OZZ-IZ-Wgz" kind="show" identifier="makePayment" id="zrM-mc-wPc"/>
                         <segue destination="IHX-ks-0tr" kind="show" identifier="showTagList" id="vcd-LN-r1R"/>
+                        <segue destination="1qM-N3-q5r" kind="show" identifier="showMap" id="FKS-vC-Vga"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QuB-SP-Lf4" sceneMemberID="firstResponder"/>
@@ -335,7 +336,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="meh-lf-D7G" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1890.4000000000001" y="55.322338830584712"/>
+            <point key="canvasLocation" x="1038" y="-667"/>
         </scene>
         <!--Tag List Table View Controller-->
         <scene sceneID="Z8J-7p-ugW">
@@ -526,6 +527,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="iXn-v8-7KY"/>
+        <segue reference="FKS-vC-Vga"/>
         <segue reference="zrM-mc-wPc"/>
     </inferredMetricsTieBreakers>
 </document>

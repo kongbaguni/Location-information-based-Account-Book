@@ -17,7 +17,8 @@ class InputCell:UITableViewCell {
 }
 
 class MakePaymentTableViewController: UITableViewController {
-    let mapView = MKMapView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 80))
+    let mapView = MKMapView(frame: CGRect(x: 5, y: 5
+        , width: UIScreen.main.bounds.width-10, height: 70))
     let pointer = MKPointAnnotation()
     class var viewConroller:MakePaymentTableViewController {
         return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "makePayment") as! MakePaymentTableViewController
@@ -74,6 +75,11 @@ class MakePaymentTableViewController: UITableViewController {
         mapView.isZoomEnabled = false
         mapView.isPitchEnabled = false
         mapView.isRotateEnabled = false
+        
+        mapView.layer.borderColor = UIColor(white: 0.9, alpha: 1).cgColor
+        mapView.layer.borderWidth = 0.5
+        mapView.layer.masksToBounds = true
+        mapView.layer.cornerRadius = 5
 
         if let point = self.point {
             let region = MKCoordinateRegionMakeWithDistance(point, 200, 200)
@@ -327,7 +333,9 @@ extension MakePaymentTableViewController {
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         switch section {
         case 1:
-            return mapView
+            let view = UIView()
+            view.addSubview(mapView)
+            return view
         default:
             return nil
         }

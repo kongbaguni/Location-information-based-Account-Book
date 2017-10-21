@@ -11,5 +11,11 @@ import MapKit
 import UIKit
 class MapViewTableViewCell: UITableViewCell {
     @IBOutlet weak var mapView:MKMapView!
-    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        mapView.layer.borderColor = UIColor(white: 0.9, alpha: 1).cgColor
+        mapView.layer.borderWidth = 0.5
+        mapView.layer.masksToBounds = true
+        mapView.layer.cornerRadius = 5
+    }
 }
