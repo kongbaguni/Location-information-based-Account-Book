@@ -11,24 +11,49 @@ import MapKit
 import CoreLocation
 import RealmSwift
 import TagListView
+import FSCalendar
+
 class NavigationController: UINavigationController  {
     let locationManager = CLLocationManager()
-    let myPointer = MKPointAnnotation()
+    var myPosition = CLLocationCoordinate2D()
     
 }
 
 class ViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var mapView: MKMapView!
     
+    private var _mapview:MKMapView? = nil
+    var mapView: MKMapView? {
+        if let view = _mapview {
+            return view
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MapViewTableViewCell {
+            self._mapview = cell.mapView
+            return cell.mapView
+        }
+        return nil
+    }
+    
+    private var _calendar:FSCalendar? = nil
+    var calendarView: FSCalendar? {
+        if let view = _calendar {
+            view.delegate = self
+            view.dataSource = self
+            return view
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CalendarTableViewCell {
+            _calendar = cell.calendar
+            _calendar?.delegate = self
+            _calendar?.dataSource = self
+            return cell.calendar
+        }
+        return nil
+    }
     var selectedDate:Date? = nil
     var locationManager: CLLocationManager? {
         return Utill.navigationController?.locationManager
     }
     
-    var myPointer:MKPointAnnotation? {
-        return Utill.navigationController?.myPointer
-    }
     
     let shopPointer = MKPointAnnotation()
     
@@ -64,14 +89,12 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         locationManager?.delegate = self
         locationManager?.desiredAccuracy = kCLLocationAccuracyBest
-        view.addSubview(mapView)
-        title = Date().toString("yyyy-MM-dd", locale: Locale.current)
-        if let date = selectedDate {
-            title = date.toString("yyyy-MM-dd", locale: Locale.current)
-        }
+//        title = Date().toString("yyyy-MM-dd", locale: Locale.current)
+//        if let date = selectedDate {
+//            title = date.toString("yyyy-MM-dd", locale: Locale.current)
+//        }
         
         navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .bookmarks, target: self, action: #selector(self.onTouchRightButton(_:)))
-        navigationController?.navigationBar.topItem?.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(self.onTouchCalendarButton(_:)))
         tableView.dataSource = self
         tableView.delegate = self
         
@@ -87,11 +110,9 @@ class ViewController: UIViewController {
         super.viewDidAppear(animated)
         locationManager?.requestWhenInUseAuthorization()
         locationManager?.startUpdatingLocation()
-        if let point = myPointer {
-            mapView.addAnnotation(point)
-        }
-        mapView.addAnnotation(shopPointer)
+        mapView?.addAnnotation(shopPointer)
         tableView.reloadData()
+        calendarView?.reloadData()
     }
     
     
@@ -99,17 +120,13 @@ class ViewController: UIViewController {
         self.performSegue(withIdentifier: "showTagList", sender: nil)
         
     }
-    
-    @objc func onTouchCalendarButton(_ sender:UIBarButtonItem) {
-        self.performSegue(withIdentifier: "showCalendar", sender: nil)
-    }
-    
+        
     func findMyPos(_ cordinate:CLLocationCoordinate2D?) {
         guard let c = cordinate else {
             return
         }
         let region = MKCoordinateRegionMakeWithDistance(c, 200, 200)
-        mapView.setRegion(region, animated: true)
+        mapView?.setRegion(region, animated: true)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -132,11 +149,6 @@ class ViewController: UIViewController {
                     vc.pType = data.money < 0 ? .minus : .plus
                 }
             }
-        case "showCalendar":
-            if let vc = segue.destination as? CalendarViewController {
-                vc.selectedDate = self.selectedDate
-            }
-            break
         default:
             break
         }
@@ -148,10 +160,12 @@ class ViewController: UIViewController {
 extension ViewController:CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
-            myPointer?.coordinate = location.coordinate
-            if isSetFirstPos == false {
-                findMyPos(location.coordinate)
-                isSetFirstPos = true
+            Utill.navigationController?.myPosition = location.coordinate
+            if mapView != nil {
+                if isSetFirstPos == false {
+                    findMyPos(location.coordinate)
+                    isSetFirstPos = true
+                }
             }
         }
     }
@@ -162,16 +176,18 @@ extension ViewController:CLLocationManagerDelegate {
 
 extension ViewController:UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 4
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return self.paymentList.count
+            return 2
         case 1:
-            return self.paymentLocaleList.count
+            return self.paymentList.count
         case 2:
+            return self.paymentLocaleList.count
+        case 3:
             if let date = self.selectedDate {
                 if date.toString("yyyy-MM-dd") != Date().toString("yyyy-MM-dd")
                 {
@@ -187,13 +203,22 @@ extension ViewController:UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
+            switch indexPath.row {
+            case 0:
+                return tableView.dequeueReusableCell(withIdentifier: "calendar", for: indexPath)
+            case 1:
+                return tableView.dequeueReusableCell(withIdentifier: "mapview", for: indexPath)
+            default:
+                break
+            }
+        case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "pay", for: indexPath) as! PaymentTableViewCell
             let payment = self.paymentList[indexPath.row]
             cell.loadData(payment)
             cell.tagListView.delegate = self
             return cell
             
-        case 1:
+        case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "sum", for: indexPath)
             let locale = paymentLocaleList[indexPath.row]
             let payList = paymentList.filter("region = %@",locale.regionCode!)
@@ -218,7 +243,7 @@ extension ViewController:UITableViewDataSource {
             cell.detailTextLabel?.textColor = total >= 0 ? .black : .red
             return cell
 
-        case 2:
+        case 3:
             switch indexPath.row {
             case 0:
                 return tableView.dequeueReusableCell(withIdentifier: "plus")!
@@ -235,6 +260,15 @@ extension ViewController:UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.section {
         case 0:
+            switch indexPath.row {
+            case 0:
+                return 300
+            case 1:
+                return 100
+            default:
+                return CGFloat.leastNormalMagnitude
+            }
+        case 1:
             return 80
         default:
             return 50
@@ -243,12 +277,12 @@ extension ViewController:UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
-        case 0:
+        case 1:
             if paymentList.count == 0 {
                 return nil
             }
             return "income,expenditure".localized
-        case 1:
+        case 2:
             if paymentLocaleList.count == 0 {
                 return nil
             }
@@ -261,17 +295,17 @@ extension ViewController:UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         switch section {
-        case 0:
+        case 1:
             if paymentList.count == 0 {
                 return CGFloat.leastNormalMagnitude
             }
             return 50
-        case 1:
+        case 2:
             if paymentLocaleList.count == 0 {
                 return CGFloat.leastNormalMagnitude
             }
             return 50
-        case 2:
+        case 3:
             return 50
         default:
             break
@@ -293,10 +327,12 @@ extension ViewController:UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
+            findMyPos(Utill.navigationController?.myPosition)
+        case 1:
             let payment = self.paymentList[indexPath.row]
             shopPointer.coordinate = payment.coordinate2D
             findMyPos(payment.coordinate2D)
-        case 2:
+        case 3:
             switch indexPath.row {
             case 0:
                 self.performSegue(withIdentifier: "makePayment", sender: MakePaymentTableViewController.PaymentType.plus)
@@ -305,9 +341,7 @@ extension ViewController:UITableViewDelegate {
             default:
                 break
             }
-            findMyPos(myPointer?.coordinate)
         default:
-            findMyPos(myPointer?.coordinate)
             break
         }
         tableView.deselectRow(at: indexPath, animated: true)
@@ -358,4 +392,25 @@ extension ViewController : TagListViewDelegate {
         print(title)
         self.performSegue(withIdentifier: "showTagsPayment", sender: title)
     }
+}
+
+extension ViewController : FSCalendarDataSource {
+    func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
+        let d1 = Utill.getDayStartDt(date)
+        let d2 = Date(timeIntervalSince1970: d1.timeIntervalSince1970 + (60*60*24))
+        let count = try! Realm().objects(PaymentModel.self).filter("%@ <= datetime && %@ > datetime", d1, d2).count
+        return count
+    }
+}
+
+extension ViewController : FSCalendarDelegate {
+    func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at monthPosition: FSCalendarMonthPosition) {
+        
+    }
+    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        self.selectedDate = date
+//        self.title = date.toString("yyyy-MM-dd")
+        self.tableView.reloadData()
+    }
+
 }
