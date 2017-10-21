@@ -106,13 +106,16 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+        calendarView?.reloadData()
+    }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         locationManager?.requestWhenInUseAuthorization()
         locationManager?.startUpdatingLocation()
         mapView?.addAnnotation(shopPointer)
-        tableView.reloadData()
-        calendarView?.reloadData()
     }
     
     
