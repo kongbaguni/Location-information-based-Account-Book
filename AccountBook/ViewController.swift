@@ -21,7 +21,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var mapView: MKMapView!
     
-    
+    var selectedDate:Date? = nil
     var locationManager: CLLocationManager? {
         return Utill.navigationController?.locationManager
     }
@@ -34,7 +34,14 @@ class ViewController: UIViewController {
     
     var paymentList:Results<PaymentModel> {
         var list = try! Realm().objects(PaymentModel.self)
-        list = list.filter("%@ <= datetime", Utill.getDayStartDt())
+        if let date = selectedDate {
+            let end = Date(timeIntervalSince1970: date.timeIntervalSince1970 + 60*60*24)
+            list = list.filter("%@ <= datetime && %@ > datetime", date, end)
+        }
+        else {
+            list = list.filter("%@ <= datetime", Utill.getDayStartDt())
+        }
+        
         return list
     }
     
@@ -59,10 +66,12 @@ class ViewController: UIViewController {
         locationManager?.desiredAccuracy = kCLLocationAccuracyBest
         view.addSubview(mapView)
         title = Date().toString("yyyy-MM-dd", locale: Locale.current)
-        
+        if let date = selectedDate {
+            title = date.toString("yyyy-MM-dd", locale: Locale.current)
+        }
         
         navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .bookmarks, target: self, action: #selector(self.onTouchRightButton(_:)))
-        
+        navigationController?.navigationBar.topItem?.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(self.onTouchCalendarButton(_:)))
         tableView.dataSource = self
         tableView.delegate = self
         
@@ -89,6 +98,10 @@ class ViewController: UIViewController {
     @objc func onTouchRightButton(_ sender:UIBarButtonItem) {
         self.performSegue(withIdentifier: "showTagList", sender: nil)
         
+    }
+    
+    @objc func onTouchCalendarButton(_ sender:UIBarButtonItem) {
+        self.performSegue(withIdentifier: "showCalendar", sender: nil)
     }
     
     func findMyPos(_ cordinate:CLLocationCoordinate2D?) {
@@ -119,6 +132,11 @@ class ViewController: UIViewController {
                     vc.pType = data.money < 0 ? .minus : .plus
                 }
             }
+        case "showCalendar":
+            if let vc = segue.destination as? CalendarViewController {
+                vc.selectedDate = self.selectedDate
+            }
+            break
         default:
             break
         }
@@ -154,6 +172,12 @@ extension ViewController:UITableViewDataSource {
         case 1:
             return self.paymentLocaleList.count
         case 2:
+            if let date = self.selectedDate {
+                if date.toString("yyyy-MM-dd") != Date().toString("yyyy-MM-dd")
+                {
+                    return 0
+                }
+            }
             return 2
         default:
             return 0

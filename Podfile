@@ -8,7 +8,7 @@ target 'AccountBook' do
   # Pods for AccountBook
   pod 'RealmSwift'
   pod 'TagListView'
-
+  pod 'FSCalendar'
 end
 
 

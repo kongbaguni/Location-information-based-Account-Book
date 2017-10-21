@@ -18,17 +18,20 @@ struct Utill {
     static let numberFormatter = NumberFormatter()
     static let dateFormatter = DateFormatter()
     
-    static func getDateStartDt(_ format:String, locale:Locale = Locale.current)->Date? {
-        return Date().toString(format, locale: locale).toDate(format, locale: locale)
+    static func getDateStartDt(_ format:String, date:Date = Date(), locale:Locale = Locale.current)->Date? {
+        return date.toString(format, locale: locale).toDate(format, locale: locale)
     }
-    static func getDayStartDt(_ locale:Locale = Locale.current)->Date {
-        return Utill.getDateStartDt("yyyy-MM-dd", locale: locale)!
+    
+    static func getDayStartDt(_ date:Date = Date() ,locale:Locale = Locale.current)->Date {
+        return Utill.getDateStartDt("yyyy-MM-dd", date:date, locale: locale)!
     }
-    static func getMonthStartDt(_ locale:Locale = Locale.current)->Date {
-        return Utill.getDateStartDt("yyyy-MM", locale: locale)!
+    
+    static func getMonthStartDt(_ date:Date = Date(), locale:Locale = Locale.current)->Date {
+        return Utill.getDateStartDt("yyyy-MM", date:date, locale: locale)!
     }
-    static func getYearStartDt(_ locale:Locale = Locale.current)->Date {
-        return Utill.getDateStartDt("yyyy", locale: locale)!
+    
+    static func getYearStartDt(_ date:Date = Date(), locale:Locale = Locale.current)->Date {
+        return Utill.getDateStartDt("yyyy", date:date, locale: locale)!
     }
 
 }

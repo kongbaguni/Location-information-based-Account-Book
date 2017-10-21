@@ -41,13 +41,22 @@ class MakePaymentTableViewController: UITableViewController {
         return try! Realm().objects(TagModel.self).filter("isPlus = %@",self.pType == .plus)
     }
     
+    private var _moneyTextField:UITextField? = nil
     var moneyTextField:UITextField? {
+        if let tf = _moneyTextField {
+            return tf
+        }
         let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? InputCell
+        _moneyTextField = cell?.textField
         return cell?.textField
     }
-    
+    private var _tagTextField:UITextField? = nil
     var tagTextField:UITextField? {
+        if let tf = _tagTextField {
+            return tf
+        }
         let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? InputCell
+        _tagTextField = cell?.textField
         return cell?.textField
 
     }
