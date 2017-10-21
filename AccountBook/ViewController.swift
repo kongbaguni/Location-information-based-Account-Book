@@ -396,7 +396,6 @@ extension ViewController : FSCalendarDataSource {
     }
     func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
         calendar.frame.size = bounds.size
-        mapView?.frame.size.height = 300 - bounds.height
         mapView?.frame.origin.y = bounds.height
     }
 }
