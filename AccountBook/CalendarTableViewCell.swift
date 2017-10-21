@@ -9,6 +9,9 @@
 import Foundation
 import FSCalendar
 import UIKit
+import MapKit
+
 class CalendarTableViewCell: UITableViewCell {
     @IBOutlet weak var calendar:FSCalendar!
+    @IBOutlet weak var mapView: MKMapView!
 }

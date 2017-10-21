@@ -27,7 +27,7 @@ class ViewController: UIViewController {
         if let view = _mapview {
             return view
         }
-        if let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MapViewTableViewCell {
+        if let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CalendarTableViewCell {
             self._mapview = cell.mapView
             return cell.mapView
         }
@@ -79,8 +79,6 @@ class ViewController: UIViewController {
         }
         return list
     }
-    var isSetFirstPos:Bool = false
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -162,16 +160,14 @@ class ViewController: UIViewController {
     }
     
 }
-
+//MARK:-
+//MARK:CLLocationManagerDelegate
 extension ViewController:CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
             Utill.navigationController?.myPosition = location.coordinate
             if mapView != nil {
-                if isSetFirstPos == false {
-                    findMyPos(location.coordinate)
-                    isSetFirstPos = true
-                }
+                findMyPos(location.coordinate)
             }
         }
     }
@@ -180,6 +176,8 @@ extension ViewController:CLLocationManagerDelegate {
     }
 }
 
+//MARK:-
+//MARK:UITableViewDataSource
 extension ViewController:UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 4
@@ -188,7 +186,7 @@ extension ViewController:UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return 2
+            return 1
         case 1:
             return self.paymentList.count
         case 2:
@@ -209,14 +207,7 @@ extension ViewController:UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            switch indexPath.row {
-            case 0:
-                return tableView.dequeueReusableCell(withIdentifier: "calendar", for: indexPath)
-            case 1:
-                return tableView.dequeueReusableCell(withIdentifier: "mapview", for: indexPath)
-            default:
-                break
-            }
+            return tableView.dequeueReusableCell(withIdentifier: "calendar", for: indexPath)
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "pay", for: indexPath) as! PaymentTableViewCell
             let payment = self.paymentList[indexPath.row]
@@ -266,14 +257,7 @@ extension ViewController:UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.section {
         case 0:
-            switch indexPath.row {
-            case 0:
-                return 300
-            case 1:
-                return 100
-            default:
-                return CGFloat.leastNormalMagnitude
-            }
+            return 300
         case 1:
             return 80
         default:
@@ -328,6 +312,8 @@ extension ViewController:UITableViewDataSource {
     }
     
 }
+
+//MARK:UITableViewDelegate
 extension ViewController:UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -391,14 +377,16 @@ extension ViewController:UITableViewDelegate {
     }
 }
 
-
+//MARK:-
+//MARK:TagListViewDelegate
 extension ViewController : TagListViewDelegate {
     func tagPressed(_ title: String, tagView: TagView, sender: TagListView) {
         print(title)
         self.performSegue(withIdentifier: "showTagsPayment", sender: title)
     }
 }
-
+//MARK:-
+//MARK:FSCalendarDataSource
 extension ViewController : FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
         let d1 = Utill.getDayStartDt(date)
@@ -406,8 +394,13 @@ extension ViewController : FSCalendarDataSource {
         let count = try! Realm().objects(PaymentModel.self).filter("%@ <= datetime && %@ > datetime", d1, d2).count
         return count
     }
+    func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
+        calendar.frame.size = bounds.size
+        mapView?.frame.size.height = 300 - bounds.height
+        mapView?.frame.origin.y = bounds.height
+    }
 }
-
+//MARK:FSCalendarDelegate
 extension ViewController : FSCalendarDelegate {
     func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at monthPosition: FSCalendarMonthPosition) {
         
