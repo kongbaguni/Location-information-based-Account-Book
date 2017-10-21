@@ -34,9 +34,7 @@ class ViewController: UIViewController {
     
     var paymentList:Results<PaymentModel> {
         var list = try! Realm().objects(PaymentModel.self)
-        if let todayStart = Date().toString("yyyy-MM-dd", locale: Locale.current).toDate("yyyy-MM-dd") {
-            list = list.filter("%@ <= datetime", todayStart)
-        }
+        list = list.filter("%@ <= datetime", Utill.getDayStartDt())
         return list
     }
     
