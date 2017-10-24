@@ -12,6 +12,7 @@ import RealmSwift
 import TagListView
 
 class TagsPayListTableViewController: UITableViewController {
+    
     var tag:String? = nil {
         didSet {
             self.title = tag
@@ -19,9 +20,12 @@ class TagsPayListTableViewController: UITableViewController {
     }
     
     var payList:Results<PaymentModel> {
-        let list = try! Realm().objects(PaymentModel.self)
+        var list = try! Realm().objects(PaymentModel.self)
         if let tag = self.tag {
-            return list.filter("tag contains[C] %@", tag)
+            list = list.filter("tag contains[C] %@", tag)
+        }
+        if Utill.isDayFilterEnable {
+            list = list.filter("%@ <= datetime && %@ > datetime", Utill.startDay, Utill.endDay)
         }
         return list
     }

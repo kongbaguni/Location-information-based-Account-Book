@@ -34,6 +34,25 @@ struct Utill {
         return Utill.getDateStartDt("yyyy", date:date, locale: locale)!
     }
 
+    
+    static var startDay:Date {
+        if let date = (UserDefaults.standard.value(forKey: "startDate") as? String)?.toDate() {
+            return date
+        }
+        return Utill.getMonthStartDt()
+    }
+    
+    static var endDay:Date {
+        if let date = (UserDefaults.standard.value(forKey: "endDate") as? String)?.toDate() {
+            return date
+        }
+        return Date(timeIntervalSince1970: Date().timeIntervalSince1970 + 60 * 60 * 24)
+    }
+    
+    static var isDayFilterEnable:Bool {
+        return UserDefaults.standard.bool(forKey: "isDayFilterEnable")
+    }
+
 }
 
 extension Int {
@@ -74,4 +93,27 @@ extension String {
     var localized: String {
         return NSLocalizedString(self, tableName: nil, bundle: Bundle.main, value: "", comment: "")
     }
+}
+
+
+extension UIToolbar {
+    
+    func toolbarPiker(mySelect : Selector) -> UIToolbar {
+        
+        let toolBar = UIToolbar()
+        
+        toolBar.barStyle = UIBarStyle.default
+        toolBar.isTranslucent = true
+        toolBar.tintColor = UIColor.black
+        toolBar.sizeToFit()
+        
+        let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.plain, target: self, action: mySelect)
+        let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
+        
+        toolBar.setItems([ spaceButton, doneButton], animated: false)
+        toolBar.isUserInteractionEnabled = true
+        
+        return toolBar
+    }
+    
 }

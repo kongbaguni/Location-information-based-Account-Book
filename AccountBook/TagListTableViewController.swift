@@ -11,6 +11,13 @@ import RealmSwift
 import UIKit
 class TagListTableViewController: UITableViewController {
  
+    var startDay:Date {
+        return Utill.startDay
+    }
+    var endDay:Date {
+        return Utill.endDay
+    }
+    
     var tags:Results<TagModel> {
         return try! Realm().objects(TagModel.self)
     }
@@ -43,7 +50,12 @@ class TagListTableViewController: UITableViewController {
             let tagstr = tag.tag
             cell.textLabel?.text = tagstr
             DispatchQueue.global().async {
-                let count = try! Realm().objects(PaymentModel.self).filter("tag contains[C] %@",tagstr).count
+                var list = try! Realm().objects(PaymentModel.self)
+                if Utill.isDayFilterEnable {
+                    list = list.filter("%@ <= datetime && %@ > datetime", self.startDay, self.endDay)
+                }
+                list = list.filter("tag contains[C] %@",tagstr)
+                let count = list.count
                 DispatchQueue.main.async {
                     cell.detailTextLabel?.text = "\(count)"
                 }
@@ -60,14 +72,20 @@ class TagListTableViewController: UITableViewController {
         return CGFloat.leastNormalMagnitude
     }
     
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return CGFloat.leastNormalMagnitude
-    }
+//    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        return CGFloat.leastNormalMagnitude
+//    }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
-            self.performSegue(withIdentifier: "showTagsPayment", sender: tags[indexPath.row])
+            let cell = tableView.cellForRow(at: indexPath)
+            if cell?.detailTextLabel?.text != "0" {
+                self.performSegue(withIdentifier: "showTagsPayment", sender: tags[indexPath.row])
+            }
+            else {
+                tableView.deselectRow(at: indexPath, animated: true)
+            }
         case 1:
             self.performSegue(withIdentifier: "showTagsPayment", sender: nil)
         default:
@@ -95,9 +113,14 @@ class TagListTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         switch indexPath.section {
         case 0:
-            let pays:Results<PaymentModel> = try! Realm().objects(PaymentModel.self).filter("tag contains[C] %@",self.tags[indexPath.row].tag)
-            if pays.count > 0 {
+            if Utill.isDayFilterEnable {
                 return false
+            }
+            let cell = tableView.cellForRow(at: indexPath)
+            if let tf = cell?.detailTextLabel {
+                if tf.text != "0" {
+                    return false
+                }
             }
             return true
         default:
@@ -131,5 +154,10 @@ class TagListTableViewController: UITableViewController {
         ]
 
     }
+    
+    
 
 }
+
+
+

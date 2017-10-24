@@ -116,7 +116,7 @@ class ViewController: UIViewController {
     
     
     @objc func onTouchRightButton(_ sender:UIBarButtonItem) {
-        self.performSegue(withIdentifier: "showTagList", sender: nil)
+        self.performSegue(withIdentifier: "showMenu", sender: nil)
         
     }
         

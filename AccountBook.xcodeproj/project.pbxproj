@@ -21,6 +21,9 @@
 		1E4DCEC01F97939800D3EAAF /* TagsPayListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4DCEBF1F97939800D3EAAF /* TagsPayListTableViewController.swift */; };
 		1E4DCEC41F981DA200D3EAAF /* TagListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4DCEC31F981DA200D3EAAF /* TagListTableViewController.swift */; };
 		1E4DCEC91F98D56E00D3EAAF /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4DCEC81F98D56E00D3EAAF /* MapViewController.swift */; };
+		1E8870AB1F9C3F8500DCB588 /* DateInput.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E8870AA1F9C3F8500DCB588 /* DateInput.xib */; };
+		1E8870AD1F9C3F9C00DCB588 /* DateInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E8870AC1F9C3F9C00DCB588 /* DateInputView.swift */; };
+		1E8870AF1F9F682F00DCB588 /* MenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E8870AE1F9F682F00DCB588 /* MenuTableViewController.swift */; };
 		1EEC31211F9B5BC50076076E /* MapViewTableVIewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EEC31201F9B5BC50076076E /* MapViewTableVIewCell.swift */; };
 		1EEC31241F9B63210076076E /* CalendarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EEC31231F9B63210076076E /* CalendarTableViewCell.swift */; };
 		25D24855736FFF3C3AC1BEA7 /* Pods_AccountBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F726AA0F15343AB006D568E /* Pods_AccountBook.framework */; };
@@ -46,6 +49,9 @@
 		1E4DCEBF1F97939800D3EAAF /* TagsPayListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsPayListTableViewController.swift; sourceTree = "<group>"; };
 		1E4DCEC31F981DA200D3EAAF /* TagListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagListTableViewController.swift; sourceTree = "<group>"; };
 		1E4DCEC81F98D56E00D3EAAF /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		1E8870AA1F9C3F8500DCB588 /* DateInput.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DateInput.xib; sourceTree = "<group>"; };
+		1E8870AC1F9C3F9C00DCB588 /* DateInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateInputView.swift; sourceTree = "<group>"; };
+		1E8870AE1F9F682F00DCB588 /* MenuTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableViewController.swift; sourceTree = "<group>"; };
 		1EEC31201F9B5BC50076076E /* MapViewTableVIewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewTableVIewCell.swift; sourceTree = "<group>"; };
 		1EEC31231F9B63210076076E /* CalendarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTableViewCell.swift; sourceTree = "<group>"; };
 		7D921C85A91179A52A3D51E9 /* Pods-AccountBook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AccountBook.release.xcconfig"; path = "Pods/Target Support Files/Pods-AccountBook/Pods-AccountBook.release.xcconfig"; sourceTree = "<group>"; };
@@ -90,6 +96,9 @@
 				1E2FB7551F936089009E1DD5 /* Utill.swift */,
 				1E4DCEB51F94C26B00D3EAAF /* Localizable.strings */,
 				1E2FB7431F935FD0009E1DD5 /* Main.storyboard */,
+				1E8870AE1F9F682F00DCB588 /* MenuTableViewController.swift */,
+				1E8870AA1F9C3F8500DCB588 /* DateInput.xib */,
+				1E8870AC1F9C3F9C00DCB588 /* DateInputView.swift */,
 				1E4DCEBD1F9632B500D3EAAF /* PaymentTableViewCell.swift */,
 				1E2FB7411F935FD0009E1DD5 /* ViewController.swift */,
 				1EEC31201F9B5BC50076076E /* MapViewTableVIewCell.swift */,
@@ -198,6 +207,7 @@
 				1E4DCEB31F94C26B00D3EAAF /* Localizable.strings in Resources */,
 				1E2FB7471F935FD0009E1DD5 /* Assets.xcassets in Resources */,
 				1E2FB7451F935FD0009E1DD5 /* Main.storyboard in Resources */,
+				1E8870AB1F9C3F8500DCB588 /* DateInput.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,7 +284,9 @@
 				1E4DCEC91F98D56E00D3EAAF /* MapViewController.swift in Sources */,
 				1EEC31241F9B63210076076E /* CalendarTableViewCell.swift in Sources */,
 				1E4DCEC41F981DA200D3EAAF /* TagListTableViewController.swift in Sources */,
+				1E8870AD1F9C3F9C00DCB588 /* DateInputView.swift in Sources */,
 				1E4DCEC01F97939800D3EAAF /* TagsPayListTableViewController.swift in Sources */,
+				1E8870AF1F9F682F00DCB588 /* MenuTableViewController.swift in Sources */,
 				1E2FB7561F936089009E1DD5 /* MakePaymentTableViewController.swift in Sources */,
 				1E2FB7401F935FD0009E1DD5 /* AppDelegate.swift in Sources */,
 				1EEC31211F9B5BC50076076E /* MapViewTableVIewCell.swift in Sources */,
