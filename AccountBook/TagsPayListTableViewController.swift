@@ -67,6 +67,12 @@ class TagsPayListTableViewController: UITableViewController {
                 vc.title = data.money.toMoneyFormatString(data.locale)
             }
             
+        case "changeTag":
+            if let vc = segue.destination as? TagsPayListTableViewController,
+                let title = sender as? String {
+                vc.tag = title
+                vc.title = title
+            }
         default:
             break
         }
@@ -187,8 +193,23 @@ class TagsPayListTableViewController: UITableViewController {
 
 extension TagsPayListTableViewController : TagListViewDelegate {
     func tagPressed(_ title: String, tagView: TagView, sender: TagListView) {
-        self.tag = title
-        self.title = title
-        tableView.reloadData()
+        if let tag = self.tag {
+            if tag == title {
+                return
+            }
+        }
+        if let list = self.navigationController?.viewControllers {
+            for vc in list {
+                if let t = vc as? TagsPayListTableViewController {
+                    if let tag = t.tag {
+                        if tag == title {
+                            navigationController?.popToViewController(t, animated: true)
+                            return
+                        }
+                    }
+                }
+            }
+        }
+        self.performSegue(withIdentifier: "changeTag", sender: title)
     }
 }
