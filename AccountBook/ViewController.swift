@@ -137,6 +137,7 @@ class ViewController: UIViewController {
             if let vc = segue.destination as? TagsPayListTableViewController {
                 vc.tag = sender as? String
                 vc.tableView.reloadData()
+                vc.isUseDateFilter = false
             }
         case "makePayment":
             if let vc = segue.destination as? MakePaymentTableViewController {

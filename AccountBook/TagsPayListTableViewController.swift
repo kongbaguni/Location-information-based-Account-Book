@@ -12,7 +12,7 @@ import RealmSwift
 import TagListView
 
 class TagsPayListTableViewController: UITableViewController {
-    
+    var isUseDateFilter = true
     var tag:String? = nil {
         didSet {
             self.title = tag
@@ -24,8 +24,10 @@ class TagsPayListTableViewController: UITableViewController {
         if let tag = self.tag {
             list = list.filter("tag contains[C] %@", tag)
         }
-        if Utill.isDayFilterEnable {
-            list = list.filter("%@ <= datetime && %@ > datetime", Utill.startDay, Utill.endDay)
+        if isUseDateFilter {
+            if Utill.isDayFilterEnable {
+                list = list.filter("%@ <= datetime && %@ > datetime", Utill.startDay, Utill.endDay)
+            }
         }
         return list
     }
@@ -164,9 +166,6 @@ class TagsPayListTableViewController: UITableViewController {
         ]
     }
     
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return CGFloat.leastNormalMagnitude
-    }
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return CGFloat.leastNormalMagnitude
