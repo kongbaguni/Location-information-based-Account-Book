@@ -9,6 +9,8 @@ target 'AccountBook' do
   pod 'RealmSwift'
   pod 'TagListView'
   pod 'FSCalendar'
+  pod 'Firebase/AdMob'
+
 end
 
 
