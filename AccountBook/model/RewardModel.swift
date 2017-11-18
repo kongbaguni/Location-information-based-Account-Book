@@ -1,5 +1,5 @@
 //
-//  RewordModel.swift
+//  RewardModel.swift
 //  AccountBook
 //
 //  Created by Seo Changyul on 2017. 11. 18..
@@ -10,7 +10,7 @@ import Foundation
 import RealmSwift
 import CoreLocation
 
-class RewordModel: Object {
+class RewardModel: Object {
     @objc dynamic var datetime:Date?
     @objc dynamic var amount:Int = 0
     @objc dynamic var latitude:Double = 0

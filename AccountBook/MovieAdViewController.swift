@@ -9,65 +9,58 @@
 import Foundation
 import UIKit
 import GoogleMobileAds
-import JHUD
+import PKHUD
 import RealmSwift
 
-class MovieAdViewController: UIViewController {
+class MovieAdViewController: UITableViewController {
     let rewardBasedVideo = GADRewardBasedVideoAd.sharedInstance()
 
-    var rewardList:Results<RewordModel> {
-        return try! Realm().objects(RewordModel.self)
+    var rewardList:Results<RewardModel> {
+        var list = try! Realm().objects(RewardModel.self)
+        list = list.filter("%@ <= datetime", Utill.getDayStartDt())
+        return list
     }
     
-    let loading = JHUD()
-    var request:GADRequest? = nil
-    @IBOutlet weak var tableView:UITableView!
-    
+    @IBOutlet weak var bannerView: GADBannerView!
     @IBOutlet weak var confirmBtn: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         rewardBasedVideo.delegate = self
-        loading.frame.size = view.bounds.size
-        tableView.dataSource = self
-        tableView.delegate = self
-    }
-    
-    @objc func loadVideo() {
-        if let req = self.request {
-            rewardBasedVideo.load(req, withAdUnitID: Const.GoogleMovieAdId)
-        }
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        loading.frame.size = view.bounds.size
         confirmBtn.setTitle("show AD".localized, for: .normal)
+        
+        bannerView.adUnitID = Const.GoogleBannerAdId
+        bannerView.rootViewController = self
+        bannerView.load(GADRequest())
+        bannerView.delegate = self
     }
+    
+    
     
     @IBAction func onTouchupConfirmBtn(_ sender:UIButton) {
-        self.request = GADRequest()
-        loadVideo()
-        loading.show(at: view, hudType: .circle)
+        HUD.show(.progress)
+        rewardBasedVideo.load(GADRequest(), withAdUnitID: Const.GoogleMovieAdId)
     }
     
+    var myPoint:Int = 0
+    
     func makeReword(reword:GADAdReward) {
+        myPoint = Int(Date().timeIntervalSince1970)%90+10
         let mylocation = Location.myPosition
-
+        
         print(mylocation)
-        let model = RewordModel()
+        let model = RewardModel()
         model.type = reword.type
-        model.amount = reword.amount.intValue
+        model.amount = myPoint
         model.latitude = mylocation.latitude
         model.longitude = mylocation.longitude
         model.datetime = Date()
-
+        
         do {
             let realm = try Realm()
             realm.beginWrite()
             realm.add(model)
             try realm.commitWrite()
-            self.tableView.reloadData()
         }
         catch {
             
@@ -81,7 +74,7 @@ class MovieAdViewController: UIViewController {
         switch id {
         case "showMap":
             if let vc = segue.destination as? MapViewController ,
-                let reward = sender as? RewordModel {
+                let reward = sender as? RewardModel {
                 vc.pointer.coordinate = reward.coordinate2D
             }
         default:
@@ -91,47 +84,78 @@ class MovieAdViewController: UIViewController {
     }
 }
 
+//MARK:-
+//MARK:GADRewardBasedVideoAdDelegate
 extension MovieAdViewController : GADRewardBasedVideoAdDelegate {
     func rewardBasedVideoAdDidReceive(_ rewardBasedVideoAd: GADRewardBasedVideoAd) {
-        rewardBasedVideo.present(fromRootViewController: self)
-        loading.hide()
+        myPoint = 0
+        HUD.flash(.success, onView: nil, delay: 1) { (sucess) in
+            self.rewardBasedVideo.present(fromRootViewController: self)
+            PKHUD.sharedHUD.hide()
+        }
     }
     
     func rewardBasedVideoAd(_ rewardBasedVideoAd: GADRewardBasedVideoAd, didRewardUserWith reward: GADAdReward) {
-        self.makeReword(reword: reward)
+        makeReword(reword: reward)
     }
     
     func rewardBasedVideoAd(_ rewardBasedVideoAd: GADRewardBasedVideoAd,
                             didFailToLoadWithError error: Error) {
-        print("Reward based video ad failed to load.")
-        perform(#selector(self.loadVideo), with: nil, afterDelay: 1)
+        
+        HUD.flash(.error, onView: nil, delay: 1) { (sucess) in
+            PKHUD.sharedHUD.hide()
+        }
+        
     }
     
     func rewardBasedVideoAdDidClose(_ rewardBasedVideoAd: GADRewardBasedVideoAd) {
+        let vc = UIAlertController(title: "\(myPoint) point!", message: nil, preferredStyle: .alert)
+        vc.addAction(UIAlertAction(title: "confirm".localized, style: .cancel, handler: { (action) in
+            self.tableView.reloadData()
+        }))
+        self.present(vc, animated: true, completion: nil)
+
+    }
+}
+
+//MARK:-
+//MARK:GADBannerViewDelegate
+extension MovieAdViewController: GADBannerViewDelegate {
+    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+        
+    }
+    func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
+        print(error)
         
     }
 }
 
-
-extension MovieAdViewController : UITableViewDataSource {
-
-    func numberOfSections(in tableView: UITableView) -> Int {
+//MARK:-
+//MARK:TableViewDataSource
+extension MovieAdViewController {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return rewardList.count
     }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let reward = rewardList[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "reward", for: indexPath)
-        cell.textLabel?.text = reward.datetime?.toString("yyyy-MM-dd")
+        cell.textLabel?.text = reward.datetime?.toString("yyyy-MM-dd ah:mm:ss")
         cell.detailTextLabel?.text = "\(reward.amount)"
+        
         return cell
     }
 }
 
-extension MovieAdViewController : UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//MARK:-
+//MARK:TableViewDelegate
+extension MovieAdViewController {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         let reward = rewardList[indexPath.row]
         performSegue(withIdentifier: "showMap", sender: reward)
     }

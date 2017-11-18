@@ -10,7 +10,7 @@ target 'AccountBook' do
   pod 'TagListView'
   pod 'FSCalendar'
   pod 'Firebase/AdMob'
-  pod 'JHUD'
+  pod 'PKHUD', '~> 5.0'
 
 end
 

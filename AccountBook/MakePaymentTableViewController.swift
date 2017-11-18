@@ -81,10 +81,8 @@ class MakePaymentTableViewController: UITableViewController {
         mapView.layer.masksToBounds = true
         mapView.layer.cornerRadius = 5
 
-        if let point = self.point {
-            let region = MKCoordinateRegionMakeWithDistance(point, 200, 200)
-            mapView.setRegion(region, animated: false)
-        }
+        let region = MKCoordinateRegionMakeWithDistance(point, 200, 200)
+        mapView.setRegion(region, animated: false)
 
     }
     
@@ -173,18 +171,16 @@ class MakePaymentTableViewController: UITableViewController {
         loadTagData()
 
     }
-    var point:CLLocationCoordinate2D? {
+    var point:CLLocationCoordinate2D {
         if let data = self.data {
             Location.myPosition = data.coordinate2D
             return data.coordinate2D
         }
-        return nil
+        return Location.myPosition
     }
     
     @objc func loadTagData() {
-        guard let point = self.point else {
-            return
-        }
+        let point = self.point
         pointer.coordinate = point
         
         DispatchQueue.global().async {

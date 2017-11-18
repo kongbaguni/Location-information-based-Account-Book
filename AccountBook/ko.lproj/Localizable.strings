@@ -25,4 +25,13 @@
 "select tag" = "태그 선택";
 "tag list" = "태그 목록";
 "total" = "전체";
+
+"statistics" = "통계";
+
+"setting" = "설정";
+"Set date range" = "기간 설정";
+"start date" = "시작";
+"end date" = "종료";
+
+"ad title" = "제작자 도와주기";
 "show AD" = "광고 보기";

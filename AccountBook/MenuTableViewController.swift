@@ -8,14 +8,17 @@
 
 import Foundation
 import UIKit
-import GoogleMobileAds
+import RealmSwift
 
 class MenuTableViewController: UITableViewController {
-    @IBOutlet weak var banner: GADBannerView!
+    @IBOutlet weak var tagListCell: UITableViewCell!
+    @IBOutlet weak var dateRangeOnOffCell: UITableViewCell!
+    
     @IBOutlet weak var setting_daySwitch:UISwitch!
     @IBOutlet weak var setting_startDayTF:UITextField!
     @IBOutlet weak var setting_endDayTF:UITextField!
     
+    @IBOutlet weak var showADCell: UITableViewCell!
     @IBOutlet weak var endDayCell: UITableViewCell!
     @IBOutlet weak var startDayCell: UITableViewCell!
     @IBAction func onChangeSwitch(_ sender:UISwitch) {
@@ -34,9 +37,6 @@ class MenuTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        banner.adUnitID = Const.GoogleBannerAdId
-        banner.rootViewController = self
-        banner.load(GADRequest())
         setting_startDayTF.text = Utill.startDay.toString("yyyy-MM-dd")
         setting_endDayTF.text = Utill.endDay.toString("yyyy-MM-dd")
         setting_startDayTF.inputView = pickerStart
@@ -60,6 +60,13 @@ class MenuTableViewController: UITableViewController {
                 cell?.alpha = alpha
             }
         }
+        
+        tagListCell.textLabel?.text = "tag list".localized
+        dateRangeOnOffCell.textLabel?.text = "Set date range".localized
+        startDayCell.textLabel?.text = "start date".localized
+        endDayCell.textLabel?.text = "end date".localized
+        showADCell.textLabel?.text = "show AD".localized
+        
     }
     
     
@@ -92,6 +99,29 @@ class MenuTableViewController: UITableViewController {
         default:
             break
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0:
+            return "statistics".localized
+        case 1:
+            return "setting".localized
+        case 2:
+            return "ad title".localized
+        default:
+            return nil
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
+        let total:Int = try! Realm().objects(RewardModel.self).sum(ofProperty: "amount")
+        let formater = NumberFormatter()
+        formater.numberStyle = .decimal
+        if let number = formater.string(from:NSNumber(value: total)) {
+            showADCell.detailTextLabel?.text = "\(number) Point"
+        }
     }
 }
