@@ -89,9 +89,7 @@ class MakePaymentTableViewController: UITableViewController {
     }
     
     @objc func onTouchDone(_ sender:UIBarButtonItem) {
-        guard let mylocation = Utill.navigationController?.myPosition else {
-            return
-        }
+        let mylocation = Location.myPosition 
         let realm = try! Realm()
         if let d = data {
             realm.beginWrite()
@@ -176,13 +174,11 @@ class MakePaymentTableViewController: UITableViewController {
 
     }
     var point:CLLocationCoordinate2D? {
-        guard var point = Utill.navigationController?.myPosition else {
-            return nil
-        }
         if let data = self.data {
-            point = data.coordinate2D
+            Location.myPosition = data.coordinate2D
+            return data.coordinate2D
         }
-        return point
+        return nil
     }
     
     @objc func loadTagData() {

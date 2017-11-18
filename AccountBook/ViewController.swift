@@ -15,7 +15,6 @@ import FSCalendar
 
 class NavigationController: UINavigationController  {
     let locationManager = CLLocationManager()
-    var myPosition = CLLocationCoordinate2D()
     
 }
 
@@ -166,7 +165,7 @@ class ViewController: UIViewController {
 extension ViewController:CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
-            Utill.navigationController?.myPosition = location.coordinate
+            Location.myPosition = location.coordinate
             if mapView != nil {
                 findMyPos(location.coordinate)
             }
@@ -320,7 +319,7 @@ extension ViewController:UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
-            findMyPos(Utill.navigationController?.myPosition)
+            findMyPos(Location.myPosition)
         case 1:
             let payment = self.paymentList[indexPath.row]
             self.performSegue(withIdentifier: "showMap", sender: payment)

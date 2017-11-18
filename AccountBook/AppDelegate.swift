@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import GoogleMobileAds
+import RealmSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -20,6 +21,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         FirebaseApp.configure()
         GADMobileAds.configure(withApplicationID: Const.GoogleAdmobID)
+        
+        Realm.Configuration.defaultConfiguration = Realm.Configuration(
+            schemaVersion: 0,
+            migrationBlock: { migration, oldSchemaVersion in
+                
+        })
+        
         return true
     }
 

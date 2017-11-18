@@ -30,5 +30,5 @@ class PaymentModel: Object {
 
     var locale:Locale {
         return Locale(identifier: locailIdentifier)
-    }
+    }    
 }

@@ -10,6 +10,7 @@ target 'AccountBook' do
   pod 'TagListView'
   pod 'FSCalendar'
   pod 'Firebase/AdMob'
+  pod 'JHUD'
 
 end
 
