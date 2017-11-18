@@ -8,7 +8,10 @@
 
 import Foundation
 import UIKit
+import GoogleMobileAds
+
 class MenuTableViewController: UITableViewController {
+    @IBOutlet weak var banner: GADBannerView!
     @IBOutlet weak var setting_daySwitch:UISwitch!
     @IBOutlet weak var setting_startDayTF:UITextField!
     @IBOutlet weak var setting_endDayTF:UITextField!
@@ -31,6 +34,9 @@ class MenuTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        banner.adUnitID = Const.GoogleBannerAdId
+        banner.rootViewController = self
+        banner.load(GADRequest())
         setting_startDayTF.text = Utill.startDay.toString("yyyy-MM-dd")
         setting_endDayTF.text = Utill.endDay.toString("yyyy-MM-dd")
         setting_startDayTF.inputView = pickerStart
