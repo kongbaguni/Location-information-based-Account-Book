@@ -36,13 +36,14 @@ class MovieAdViewController: UITableViewController {
     }
     
     
-    
     @IBAction func onTouchupConfirmBtn(_ sender:UIButton) {
         HUD.show(.progress)
         rewardBasedVideo.load(GADRequest(), withAdUnitID: Const.GoogleMovieAdId)
     }
     
     var myPoint:Int = 0
+    
+    var rewardAdRequestCount = 0
     
     func makeReword(reword:GADAdReward) {
         myPoint = Int(Date().timeIntervalSince1970)%90+10
@@ -80,8 +81,8 @@ class MovieAdViewController: UITableViewController {
         default:
             break
         }
-
     }
+    
 }
 
 //MARK:-
@@ -101,19 +102,25 @@ extension MovieAdViewController : GADRewardBasedVideoAdDelegate {
     
     func rewardBasedVideoAd(_ rewardBasedVideoAd: GADRewardBasedVideoAd,
                             didFailToLoadWithError error: Error) {
-        
-        HUD.flash(.error, onView: nil, delay: 1) { (sucess) in
-            PKHUD.sharedHUD.hide()
+        if rewardAdRequestCount > 10 {
+            HUD.flash(.error, onView: nil, delay: 1) { (sucess) in
+                PKHUD.sharedHUD.hide()
+            }
+            return
         }
         
+        rewardAdRequestCount += 1
+        rewardBasedVideo.load(GADRequest(), withAdUnitID: Const.GoogleMovieAdId)
     }
     
     func rewardBasedVideoAdDidClose(_ rewardBasedVideoAd: GADRewardBasedVideoAd) {
-        let vc = UIAlertController(title: "\(myPoint) point!", message: nil, preferredStyle: .alert)
-        vc.addAction(UIAlertAction(title: "confirm".localized, style: .cancel, handler: { (action) in
-            self.tableView.reloadData()
-        }))
-        self.present(vc, animated: true, completion: nil)
+        if myPoint > 0 {
+            let vc = UIAlertController(title: "\(myPoint) point!", message: nil, preferredStyle: .alert)
+            vc.addAction(UIAlertAction(title: "confirm".localized, style: .cancel, handler: { (action) in
+                self.tableView.reloadData()
+            }))
+            self.present(vc, animated: true, completion: nil)
+        }
 
     }
 }
