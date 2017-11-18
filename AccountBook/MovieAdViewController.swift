@@ -43,8 +43,6 @@ class MovieAdViewController: UITableViewController {
     
     var myPoint:Int = 0
     
-    var rewardAdRequestCount = 0
-    
     func makeReword(reword:GADAdReward) {
         myPoint = Int(Date().timeIntervalSince1970)%90+10
         let mylocation = Location.myPosition
@@ -102,14 +100,6 @@ extension MovieAdViewController : GADRewardBasedVideoAdDelegate {
     
     func rewardBasedVideoAd(_ rewardBasedVideoAd: GADRewardBasedVideoAd,
                             didFailToLoadWithError error: Error) {
-        if rewardAdRequestCount > 10 {
-            HUD.flash(.error, onView: nil, delay: 1) { (sucess) in
-                PKHUD.sharedHUD.hide()
-            }
-            return
-        }
-        
-        rewardAdRequestCount += 1
         rewardBasedVideo.load(GADRequest(), withAdUnitID: Const.GoogleMovieAdId)
     }
     
