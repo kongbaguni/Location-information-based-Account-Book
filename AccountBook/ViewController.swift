@@ -232,10 +232,9 @@ extension ViewController:UITableViewDataSource {
                 title.append(String(format:"income: %d".localized, b))
             }
             cell.textLabel?.text = title
-            var total = 0
-            for pay in payList {
-                total += pay.money
-            }
+            
+            let total:Int = payList.sum(ofProperty: "money")
+            
             cell.detailTextLabel?.text = total.toMoneyFormatString(locale)
             cell.detailTextLabel?.textColor = total >= 0 ? .black : .red
             return cell
