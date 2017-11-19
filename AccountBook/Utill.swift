@@ -53,6 +53,19 @@ struct Utill {
         return UserDefaults.standard.bool(forKey: "isDayFilterEnable")
     }
 
+    //지정일 부터 오늘까지 현지 자정시각의 Date 값을 배열로 반환합니다.
+    static func getDateList(_ date:Date)->[Date] {
+        let today = Utill.getDayStartDt()
+        var dates:[Date] = [Utill.getDayStartDt(date)]
+        
+        while dates.last != today {
+            let newInterval = dates.last!.timeIntervalSince1970 + 60 * 60 * 24
+            let newDate = Date(timeIntervalSince1970: newInterval)
+            dates.append(newDate)
+        }
+        return dates
+    }
+
 }
 
 extension Int {

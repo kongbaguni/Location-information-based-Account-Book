@@ -15,9 +15,19 @@ import RealmSwift
 class MovieAdViewController: UITableViewController {
     let rewardBasedVideo = GADRewardBasedVideoAd.sharedInstance()
 
-    var rewardList:Results<RewardModel> {
-        var list = try! Realm().objects(RewardModel.self)
-        list = list.filter("%@ <= datetime", Utill.getDayStartDt())
+    var rewardList:[Results<RewardModel>] {
+        let total = try! Realm().objects(RewardModel.self)
+        
+        guard let firstDate = total.first?.datetime else {
+            return []
+        }
+        
+        let dates:[Date] = Utill.getDateList(firstDate)
+        var list:[Results<RewardModel>] = []
+        for dayStart in dates {
+            let dayEnd = Date(timeIntervalSince1970: dayStart.timeIntervalSince1970 + 60 * 60 * 24)
+            list.append(total.filter("%@ <= datetime && %@ > datetime", dayStart, dayEnd))
+        }
         return list
     }
     
@@ -33,6 +43,8 @@ class MovieAdViewController: UITableViewController {
         bannerView.rootViewController = self
         bannerView.load(GADRequest())
         bannerView.delegate = self
+        title = "show AD".localized
+        
     }
     
     
@@ -44,7 +56,8 @@ class MovieAdViewController: UITableViewController {
     var myPoint:Int = 0
     
     func makeReword(reword:GADAdReward) {
-        myPoint = Int(Date().timeIntervalSince1970)%90+10
+        
+        myPoint = Int(Date().timeIntervalSince1970)%1000+1 * reword.amount.intValue
         let mylocation = Location.myPosition
         
         print(mylocation)
@@ -131,20 +144,23 @@ extension MovieAdViewController: GADBannerViewDelegate {
 //MARK:TableViewDataSource
 extension MovieAdViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return self.rewardList.count
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return rewardList.count
+        return rewardList[section].count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let reward = rewardList[indexPath.row]
+        let reward = rewardList[indexPath.section][indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "reward", for: indexPath)
-        cell.textLabel?.text = reward.datetime?.toString("yyyy-MM-dd ah:mm:ss")
-        cell.detailTextLabel?.text = "\(reward.amount)"
-        
+        cell.textLabel?.text = reward.datetime?.toString("a h:m:s")
+        cell.detailTextLabel?.text = "\(reward.amount) point"
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return rewardList[section].first?.datetime?.toString("yyyy-MM-dd")
     }
 }
 
@@ -153,7 +169,7 @@ extension MovieAdViewController {
 extension MovieAdViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let reward = rewardList[indexPath.row]
+        let reward = rewardList[indexPath.section][indexPath.row]
         performSegue(withIdentifier: "showMap", sender: reward)
     }
 }
